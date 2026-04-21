@@ -35,7 +35,8 @@ type SidebarMode = "menu" | "settings";
 
 const settingsRoutes = [
   "/settings", "/website", "/variant", "/multitab", "/sub-multitab",
-  "/sector-multitab", "/category-multitab", "/brand-multitab", "/create-tab-multitab"
+  "/sector-multitab", "/category-multitab", "/brand-multitab", "/create-tab-multitab",
+  "/settings/multitab-"
 ];
 
 const Sidebar = ({ open, onToggle }: SidebarProps) => {
@@ -129,6 +130,7 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
       else if (currentPath.includes("/category-multitab")) setActiveMenu("Category Multitab");
       else if (currentPath.includes("/brand-multitab")) setActiveMenu("Brand Multitab");
       else if (currentPath.includes("/create-tab-multitab")) setActiveMenu("Create Tab");
+      else if (currentPath.includes("/settings/multitab-")) setActiveMenu("Multitab Configuration");
       return;
     }
 
@@ -316,6 +318,14 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
               <SidebarLink to="/create-tab-multitab/add-checkbox" label="Checkbox" />
               <SidebarLink to="/create-tab-multitab/add-mapping" label="Mapping" />
               <SidebarLink to="/create-tab-multitab/add-preview" label="Preview" />
+            </SidebarItem>
+
+            <SidebarItem label="Multitab Configuration" icon={Grid} open={activeMenu === "Multitab Configuration"} onToggle={(e) => handleToggleMenu("Multitab Configuration", e)}>
+              <SidebarLink to="/settings/multitab-menu" label="Multitab Menu" />
+              <SidebarLink to="/settings/multitab-heading" label="Multitab Heading" />
+              <SidebarLink to="/settings/multitab-checkbox" label="Multitab Checkbox" />
+              <SidebarLink to="/settings/multitab-fields" label="Multitab Fields" />
+              <SidebarLink to="/settings/multitab-config" label="Multitab Config" />
             </SidebarItem>
           </SidebarSection>
         ) : (

@@ -11,10 +11,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.1.1",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@mui/material": "^7.3.9",
     "@tanstack/react-query": "^5.95.2",
+    "antd": "^6.3.6",
     "axios": "^1.13.5",
     "cors": "^2.8.5",
     "express": "^4.21.0",

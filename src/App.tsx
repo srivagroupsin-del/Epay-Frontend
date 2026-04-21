@@ -115,6 +115,13 @@ import CreateTabAddCheckbox from "./pages/Multi_tab/Create_Tab/Check_Box/Check_b
 import CreateTabAddMapping from "./pages/Multi_tab/Create_Tab/Mapping/Mapping";
 import CreateTabAddPreview from "./pages/Multi_tab/Create_Tab/Preview/Preview";
 
+/* MULTITAB CONFIGURATION IMPORTS */
+import MultitabMenu from "./pages/settings/multitab_configuration/MultitabMenu";
+import MultitabHeading from "./pages/settings/multitab_configuration/MultitabHeading";
+import MultitabCheckbox from "./pages/settings/multitab_configuration/MultitabCheckbox";
+import MultitabFields from "./pages/settings/multitab_configuration/MultitabFields";
+import MultitabConfig from "./pages/settings/multitab_configuration/MultitabConfig";
+
 /* ZUSTAND DEMO PAGES */
 import SelectBusiness from "./pages/SelectBusiness";
 import DashboardDemo from "./pages/Dashboard";
@@ -297,6 +304,13 @@ function App() {
             {/* <Route path="/settings/sector-settings" element={<SectorSettingsPage />} /> */}
             <Route path="/settings/page-creation" element={<PageCreation />} />
             <Route path="/settings/dynamic-form-creator" element={<DynamicFormCreator />} />
+
+            {/* MULTITAB CONFIGURATION ROUTES */}
+            <Route path="/settings/multitab-menu" element={<MultitabMenu />} />
+            <Route path="/settings/multitab-heading" element={<MultitabHeading />} />
+            <Route path="/settings/multitab-checkbox" element={<MultitabCheckbox />} />
+            <Route path="/settings/multitab-fields" element={<MultitabFields />} />
+            <Route path="/settings/multitab-config" element={<MultitabConfig />} />
 
             {/* ZUSTAND DEMO ROUTES */}
             <Route path="/demo/select-business" element={<SelectBusiness />} />

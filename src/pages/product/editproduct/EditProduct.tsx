@@ -11,17 +11,21 @@ import {
 import { useMapping } from "../../../context/MappingContext";
 import { IMAGE_BASE_URL } from "../../../base_api/api_list";
 import QRScannerModal from "../../../components/qrscanner/QRScannerModal";
+import DynamicProductFields from "../../../components/product/DynamicProductFields";
+import { MultitabConfigApi } from "../../../api/multitabConfig.api";
 
 // Reuse styles from AddProduct
 import "../addproduct/AddProduct.css";
 
 interface SelectedMapping {
+    mapping_id: number;
     primary_id: number;
     primary_name: string;
     secondary_id: number;
     secondary_name: string;
     brand_id: number;
     brand_name: string;
+    category_name: string;
 }
 
 const EditProduct = () => {
@@ -33,21 +37,22 @@ const EditProduct = () => {
     const page = searchParams.get("page") || "1";
 
     // Mapping Context
-    const { categoryData, loading: mappingsLoading, refreshMappings } = useMapping();
+    const { categoryData, mappings, loading: mappingsLoading, refreshMappings } = useMapping();
 
     // UI States
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [selectedMappings, setSelectedMappings] = useState<SelectedMapping[]>([]);
 
-    // UI state for the current selection being made in dropdowns
     const [selection, setSelection] = useState({
+        mapping_id: 0,
         primary_id: 0,
         primary_name: "",
         secondary_id: 0,
         secondary_name: "",
         brand_id: 0,
         brand_name: "",
+        category_name: "",
     });
 
     // Form Basic Info
@@ -62,9 +67,14 @@ const EditProduct = () => {
         mrp: "",
         status: "active",
         image: undefined,
+        dynamic_fields: {} as any
     });
 
-    const [preview, setPreview] = useState<string | null>(null);
+    // Dynamic Fields State
+    const [dynamicFieldValues, setDynamicFieldValues] = useState<any[]>([]);
+    const [fieldsByCategory, setFieldsByCategory] = useState<any>({});
+
+    const [preview, setPreview] = useState<string | undefined>(undefined);
     const [filename, setFilename] = useState<string | null>(null);
     const [showScanner, setShowScanner] = useState(false);
 
@@ -90,6 +100,25 @@ const EditProduct = () => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // 🔥 Batch Fetch Dynamic Fields
+    useEffect(() => {
+        const categoryIds = Array.from(new Set(selectedMappings.map(m => m.secondary_id || m.primary_id)));
+        if (categoryIds.length === 0) {
+            setFieldsByCategory({});
+            return;
+        }
+
+        const fetchFields = async () => {
+            try {
+                const data = await MultitabConfigApi.getDynamicFields(categoryIds as any);
+                setFieldsByCategory(data || {});
+            } catch (err) {
+                console.error("Failed to fetch dynamic fields", err);
+            }
+        };
+        fetchFields();
+    }, [selectedMappings]);
 
     /* ---------------- INITIAL DATA LOADING ---------------- */
     useEffect(() => {
@@ -119,7 +148,17 @@ const EditProduct = () => {
                     option_set: product.option_set ?? 0,
                     status: product.status || "active",
                     image: undefined,
+                    dynamic_fields: product.dynamic_fields || []
                 });
+
+                setDynamicFieldValues(product.dynamic_fields || []);
+
+                if (product.base_image) {
+                    setPreview(`${IMAGE_BASE_URL}${product.base_image}`);
+                    setFilename(product.base_image.split("/").pop() || "product_image");
+                }
+
+                 // No longer need separate fetches here as data is handled by context or batch fetch
 
                 // Resolve product mappings from backend data
                 if (Array.isArray(product.mappings)) {
@@ -131,7 +170,9 @@ const EditProduct = () => {
                             secondary_id: isPrimary ? 0 : Number(m.category_id),
                             secondary_name: isPrimary ? "" : m.category_name,
                             brand_id: Number(m.brand_id),
-                            brand_name: m.brand_name
+                            brand_name: m.brand_name,
+                            mapping_id: Number(m.mapping_id),
+                            category_name: m.category_name
                         };
                     });
 
@@ -229,16 +270,16 @@ const EditProduct = () => {
     };
 
     const addAlternativeName = () => {
-        setForm(prev => ({ 
-            ...prev, 
-            alternative_names: [...(prev.alternative_names || []), ""] 
+        setForm(prev => ({
+            ...prev,
+            alternative_names: [...(prev.alternative_names || []), ""]
         }));
     };
 
     const removeAlternativeName = (index: number) => {
         if ((form.alternative_names || []).length > 1) {
-            setForm(prev => ({ 
-                ...prev, 
+            setForm(prev => ({
+                ...prev,
                 alternative_names: (prev.alternative_names || []).filter((_, i) => i !== index)
             }));
         }
@@ -252,12 +293,14 @@ const EditProduct = () => {
 
     const handlePrimarySelect = (id: number, name: string) => {
         setSelection({
+            mapping_id: 0,
             primary_id: id,
             primary_name: name,
             secondary_id: 0,
             secondary_name: "",
             brand_id: 0,
             brand_name: "",
+            category_name: "",
         });
         setShowPrimaryList(false);
         setSearchTerm("");
@@ -270,6 +313,7 @@ const EditProduct = () => {
             secondary_name: name,
             brand_id: 0,
             brand_name: "",
+            category_name: name,
         }));
         setShowSecondaryList(false);
         setSearchTerm("");
@@ -280,10 +324,13 @@ const EditProduct = () => {
             ...prev,
             brand_id: id,
             brand_name: name,
+            category_name: prev.secondary_name || prev.primary_name,
         }));
         setShowBrandList(false);
         setSearchTerm("");
     };
+
+
 
     const handleAddMapping = () => {
         if (!selection.primary_id || !selection.brand_id) {
@@ -291,26 +338,35 @@ const EditProduct = () => {
             return;
         }
 
-        const isDuplicate = selectedMappings.some(m =>
-            m.primary_id === selection.primary_id &&
-            m.secondary_id === selection.secondary_id &&
-            m.brand_id === selection.brand_id
+        // Find real mapping_id from context
+        const mappingObj = mappings.find((m: any) =>
+            m.primaryId === selection.primary_id &&
+            m.secondaryId === selection.secondary_id &&
+            String(m.brandId).split(',').map(s => s.trim()).includes(String(selection.brand_id))
         );
-
-        if (isDuplicate) {
-            alert("Mapping already added");
+        
+        if (!mappingObj?.mappingId) {
+            alert("This Category and Brand combination has not been mapped in Settings. Please map it first.");
             return;
         }
 
-        setSelectedMappings(prev => [...prev, { ...selection }]);
+        const mappingId = mappingObj.mappingId;
+
+        setSelectedMappings(prev => [...prev, {
+            ...selection,
+            mapping_id: mappingId,
+            category_name: selection.secondary_name || selection.primary_name
+        }]);
 
         setSelection({
+            mapping_id: 0,
             primary_id: 0,
             primary_name: "",
             secondary_id: 0,
             secondary_name: "",
             brand_id: 0,
             brand_name: "",
+            category_name: "",
         });
     };
 
@@ -330,7 +386,7 @@ const EditProduct = () => {
     };
 
     const handleDeleteImage = () => {
-        setPreview(null);
+        setPreview(undefined);
         setFilename(null);
         setForm(prev => ({ ...prev, image: null }));
     };
@@ -358,6 +414,11 @@ const EditProduct = () => {
                     primary_id: m.primary_id,
                     secondary_id: m.secondary_id,
                     brand_id: m.brand_id
+                })),
+                dynamic_fields: (dynamicFieldValues || []).map((f: any) => ({
+                    mapping_id: f.mapping_id,
+                    field_id: f.field_id,
+                    value: f.value ?? ""
                 }))
             };
             await updateProduct(id!, payload as any);
@@ -465,11 +526,34 @@ const EditProduct = () => {
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    <div className="selected-mappings-dynamic" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {selectedMappings.map((m, idx) => (
-                            <div key={idx} style={{ backgroundColor: 'white', border: '1px solid #e2e8f0', padding: '5px 12px', borderRadius: '20px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span>{m.primary_name} {m.secondary_name && <>&gt; {m.secondary_name}</>} &gt; <b>{m.brand_name}</b></span>
-                                <button type="button" onClick={() => handleRemoveMapping(idx)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#94a3b8' }}><X size={14} /></button>
+                            <div key={idx} style={{ padding: '16px', backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#1e293b' }}>
+                                        <span style={{ fontWeight: '600' }}>{m.primary_name}</span>
+                                        {m.secondary_name && <><ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} /> <span>{m.secondary_name}</span></>}
+                                        <ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} />
+                                        <span style={{ color: '#2563eb', fontWeight: 'bold' }}>{m.brand_name}</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveMapping(idx)}
+                                        style={{ background: '#fef2f2', border: 'none', padding: '6px', borderRadius: '6px', display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#ef4444' }}
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+
+                                <DynamicProductFields 
+                                    mapping_id={m.mapping_id}
+                                    fields={[
+                                        ...(fieldsByCategory.global || []),
+                                        ...(fieldsByCategory[m.secondary_id || m.primary_id] || [])
+                                    ]}
+                                    dynamicFields={dynamicFieldValues}
+                                    setDynamicFields={setDynamicFieldValues}
+                                />
                             </div>
                         ))}
                     </div>
@@ -535,7 +619,7 @@ const EditProduct = () => {
                                         style={{ flex: 1 }}
                                     />
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                       
+
                                         {index === 0 ? (
                                             <button
                                                 type="button"

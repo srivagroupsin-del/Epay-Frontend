@@ -6,15 +6,19 @@ import { useMapping } from "../../../context/MappingContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import QRScannerModal from "../../../components/qrscanner/QRScannerModal";
+import DynamicProductFields from "../../../components/product/DynamicProductFields";
+import { MultitabConfigApi } from "../../../api/multitabConfig.api";
 import "./AddProduct.css";
 
 interface SelectedMapping {
+    mapping_id: number;
     primary_id: number;
     primary_name: string;
     secondary_id: number;
     secondary_name: string;
     brand_id: number;
     brand_name: string;
+    category_name: string;
 }
 
 const AddProduct = () => {
@@ -24,19 +28,23 @@ const AddProduct = () => {
     const { showSuccess } = useSuccessPopup();
 
     // Consume Hierarchical Mapping Data
-    const { categoryData, loading, refreshMappings } = useMapping();
+    const { categoryData, mappings, loading, refreshMappings } = useMapping();
 
     // Mapping Selection Logic
     const [selectedMappings, setSelectedMappings] = useState<SelectedMapping[]>([]);
+    const [dynamicFieldValues, setDynamicFieldValues] = useState<any[]>([]);
+    const [fieldsByCategory, setFieldsByCategory] = useState<any>({});
 
     // UI state for the current selection being made
     const [selection, setSelection] = useState({
+        mapping_id: 0,
         primary_id: 0,
         primary_name: "",
         secondary_id: 0,
         secondary_name: "",
         brand_id: 0,
         brand_name: "",
+        category_name: "",
     });
 
     // Form state
@@ -56,7 +64,7 @@ const AddProduct = () => {
 
     const [showScanner, setShowScanner] = useState(false);
 
-    const [preview, setPreview] = useState<string | null>(null);
+    const [preview, setPreview] = useState<string | undefined>(undefined);
     const [filename, setFilename] = useState<string | null>(null);
 
     // Dropdown UI State
@@ -94,6 +102,25 @@ const AddProduct = () => {
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
+
+    // 🔥 Batch Fetch Dynamic Fields
+    useEffect(() => {
+        const categoryIds = Array.from(new Set(selectedMappings.map(m => m.secondary_id || m.primary_id)));
+        if (categoryIds.length === 0) {
+            setFieldsByCategory({});
+            return;
+        }
+
+        const fetchFields = async () => {
+            try {
+                const data = await MultitabConfigApi.getDynamicFields(categoryIds as any);
+                setFieldsByCategory(data || {});
+            } catch (err) {
+                console.error("Failed to fetch dynamic fields", err);
+            }
+        };
+        fetchFields();
+    }, [selectedMappings]);
 
     /* ---------------- CASCADING DROPDOWN LOGIC ---------------- */
 
@@ -183,12 +210,14 @@ const AddProduct = () => {
 
     const handlePrimarySelect = (id: number, name: string) => {
         setSelection({
+            mapping_id: 0,
             primary_id: id,
             primary_name: name,
             secondary_id: 0,
             secondary_name: "",
             brand_id: 0,
             brand_name: "",
+            category_name: "",
         });
         setShowPrimaryList(false);
         setSearchTerm("");
@@ -197,10 +226,12 @@ const AddProduct = () => {
     const handleSecondarySelect = (id: number, name: string) => {
         setSelection(prev => ({
             ...prev,
+            mapping_id: 0,
             secondary_id: id,
             secondary_name: name,
             brand_id: 0,
             brand_name: "",
+            category_name: name,
         }));
         setShowSecondaryList(false);
         setSearchTerm("");
@@ -209,12 +240,16 @@ const AddProduct = () => {
     const handleBrandSelect = (id: number, name: string) => {
         setSelection(prev => ({
             ...prev,
+            mapping_id: 0,
             brand_id: id,
             brand_name: name,
+            category_name: prev.secondary_name || prev.primary_name,
         }));
         setShowBrandList(false);
         setSearchTerm("");
     };
+
+
 
     const handleAddMapping = () => {
         if (!selection.primary_id || !selection.brand_id) {
@@ -234,15 +269,35 @@ const AddProduct = () => {
             return;
         }
 
-        setSelectedMappings(prev => [...prev, { ...selection }]);
+        // Find real mapping_id from context
+        const mappingObj = mappings.find(m =>
+            m.primaryId === selection.primary_id &&
+            m.secondaryId === selection.secondary_id &&
+            String(m.brandId).split(',').map(s => s.trim()).includes(String(selection.brand_id))
+        );
+        
+        if (!mappingObj?.mappingId) {
+            alert("This Category and Brand combination has not been mapped in Settings. Please map it first.");
+            return;
+        }
+
+        const mappingId = mappingObj.mappingId;
+
+        setSelectedMappings(prev => [...prev, {
+            ...selection,
+            mapping_id: mappingId,
+            category_name: selection.secondary_name || selection.primary_name
+        }]);
 
         setSelection({
+            mapping_id: 0,
             primary_id: 0,
             primary_name: "",
             secondary_id: 0,
             secondary_name: "",
             brand_id: 0,
             brand_name: "",
+            category_name: "",
         });
     };
 
@@ -262,12 +317,12 @@ const AddProduct = () => {
             reader.readAsDataURL(selectedFile);
         } else {
             setFilename(null);
-            setPreview(null);
+            setPreview(undefined);
         }
     };
 
     const handleDeleteImage = () => {
-        setPreview(null);
+        setPreview(undefined);
         setFilename(null);
         setForm(prev => ({ ...prev, image: null }));
         const fileInput = document.getElementById("productImage") as HTMLInputElement;
@@ -314,6 +369,11 @@ const AddProduct = () => {
                 mrp: form.mrp ? Number(form.mrp) : undefined,
                 note: form.note || undefined,
                 image: form.image,
+                dynamic_fields: (dynamicFieldValues || []).map((f: any) => ({
+                    mapping_id: f.mapping_id,
+                    field_id: f.field_id,
+                    value: f.value ?? ""
+                })),
             };
 
             await createProduct(payload);
@@ -477,20 +537,34 @@ const AddProduct = () => {
                     </div>
 
                     {/* SELECTED MAPPINGS LIST */}
-                    <div className="selected-mappings-tags" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    <div className="selected-mappings-dynamic" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         {selectedMappings.map((m, idx) => (
-                            <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px', backgroundColor: '#fff', border: '1px solid #e2e8f0', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', color: '#475569', boxShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
-                                <span style={{ fontWeight: '500' }}>{m.primary_name}</span>
-                                {m.secondary_name && <><ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} /> <span>{m.secondary_name}</span></>}
-                                <ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} />
-                                <span style={{ color: '#1e293b', fontWeight: 'bold' }}>{m.brand_name}</span>
-                                <button
-                                    type="button"
-                                    onClick={() => handleRemoveMapping(idx)}
-                                    style={{ background: 'none', border: 'none', padding: '2px', display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#94a3b8' }}
-                                >
-                                    <X size={14} />
-                                </button>
+                            <div key={idx} style={{ padding: '16px', backgroundColor: '#fff', border: '1px solid #e2e8f0', borderRadius: '12px', boxShadow: '0 2px 4px rgba(0,0,0,0.05)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px', borderBottom: '1px solid #f1f5f9', paddingBottom: '8px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: '#1e293b' }}>
+                                        <span style={{ fontWeight: '600' }}>{m.primary_name}</span>
+                                        {m.secondary_name && <><ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} /> <span>{m.secondary_name}</span></>}
+                                        <ChevronDown size={12} style={{ transform: 'rotate(-90deg)' }} />
+                                        <span style={{ color: '#2563eb', fontWeight: 'bold' }}>{m.brand_name}</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleRemoveMapping(idx)}
+                                        style={{ background: '#fef2f2', border: 'none', padding: '6px', borderRadius: '6px', display: 'flex', alignItems: 'center', cursor: 'pointer', color: '#ef4444' }}
+                                    >
+                                        <X size={16} />
+                                    </button>
+                                </div>
+
+                                <DynamicProductFields 
+                                    mapping_id={m.mapping_id}
+                                    fields={[
+                                        ...(fieldsByCategory.global || []),
+                                        ...(fieldsByCategory[m.secondary_id || m.primary_id] || [])
+                                    ]}
+                                    dynamicFields={dynamicFieldValues}
+                                    setDynamicFields={setDynamicFieldValues}
+                                />
                             </div>
                         ))}
                         {selectedMappings.length === 0 && (

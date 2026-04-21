@@ -90,6 +90,10 @@ export type ProductCreatePayload = {
     note?: string;
     system_note?: string;
     image?: File | null;
+    dynamic_fields?: any;
+    sector_id?: number;
+    sub_sector_id?: number;
+    category_id?: number;
 };
 
 /**
@@ -109,6 +113,10 @@ export type ProductForm = {
     status: string;
     image?: File | null;
     system_note?: string;
+    dynamic_fields?: any;
+    sector_id?: number;
+    sub_sector_id?: number;
+    category_id?: number;
     mappings?: {
         primary_id: number;
         secondary_id: number;
@@ -146,7 +154,11 @@ export const createProduct = async (data: ProductCreatePayload) => {
     if (data.note) formData.append("note", data.note);
     if (data.system_note) formData.append("system_note", data.system_note);
     if (data.image) formData.append("image", data.image);
-    console.log("Mappings before submit:", data.mappings);
+    if (data.dynamic_fields) formData.append("dynamic_fields", JSON.stringify(data.dynamic_fields));
+    if (data.sector_id) formData.append("sector_id", String(data.sector_id));
+    if (data.sub_sector_id) formData.append("sub_sector_id", String(data.sub_sector_id));
+    if (data.category_id) formData.append("category_id", String(data.category_id));
+
     const json = await http("/products", {
         method: "POST",
         body: formData,
@@ -179,6 +191,10 @@ export const updateProduct = async (
     if (data.mrp) formData.append("mrp", String(data.mrp));
     if (data.note !== undefined) formData.append("note", data.note || "");
     if (data.system_note !== undefined) formData.append("system_note", data.system_note || "");
+    if (data.dynamic_fields !== undefined) formData.append("dynamic_fields", JSON.stringify(data.dynamic_fields || {}));
+    if (data.sector_id) formData.append("sector_id", String(data.sector_id));
+    if (data.sub_sector_id) formData.append("sub_sector_id", String(data.sub_sector_id));
+    if (data.category_id) formData.append("category_id", String(data.category_id));
 
     // Individual IDs for backward compatibility/backend verification
     if (data.primary_category) formData.append("category_id", String(data.primary_category));
