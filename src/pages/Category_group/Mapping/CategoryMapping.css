@@ -1,0 +1,661 @@
+/* ──────────────────────────────────────────────
+   Category Group Mapping  –  CategoryMapping.css
+   ────────────────────────────────────────────── */
+
+/* Page wrapper */
+.cm-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    color: #1e293b;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+/* ── Header ── */
+.cm-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+}
+
+.cm-header h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #0f172a;
+    letter-spacing: -0.025em;
+    margin: 0 0 4px;
+}
+
+.cm-header p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+/* ── Form Panel ── */
+.cm-panel {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 24px 24px 20px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.cm-form-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+/* ── Field wrapper ── */
+.cm-field {
+    flex: 1;
+    min-width: 220px;
+    position: relative;
+}
+
+.cm-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 7px;
+    letter-spacing: 0.2px;
+}
+
+/* ── Dropdown trigger ── */
+.cm-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 46px;
+    padding: 0 14px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.18s, box-shadow 0.18s;
+    user-select: none;
+}
+
+.cm-trigger:hover {
+    border-color: #a5b4fc;
+}
+
+.cm-trigger.open {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.cm-value {
+    font-size: 14px;
+    color: #1e293b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cm-placeholder {
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.cm-chevron {
+    color: #94a3b8;
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+}
+
+.cm-chevron.rotated {
+    transform: rotate(180deg);
+    color: #4f46e5;
+}
+
+/* ── Dropdown menu ── */
+.cm-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    z-index: 999;
+    overflow: hidden;
+}
+
+.cm-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #f1f5f9;
+    color: #94a3b8;
+}
+
+.cm-search-wrap input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    color: #1e293b;
+    background: transparent;
+}
+
+.cm-options {
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.cm-option {
+    padding: 10px 14px;
+    font-size: 14px;
+    color: #334155;
+    cursor: pointer;
+    transition: background 0.12s;
+}
+
+.cm-option:hover {
+    background: #f1f5f9;
+}
+
+.cm-option.selected {
+    background: #ede9fe;
+    color: #4f46e5;
+    font-weight: 600;
+}
+
+.cm-option.disabled {
+    color: #cbd5e1;
+    cursor: default;
+    font-style: italic;
+}
+
+/* ── Save button wrapper ── */
+.cm-save-wrap {
+    flex-shrink: 0;
+}
+
+.cm-save-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 46px;
+    padding: 0 22px;
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+    white-space: nowrap;
+}
+
+.cm-save-btn:hover {
+    background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 14px rgba(79, 70, 229, 0.3);
+}
+
+.cm-save-btn:active {
+    transform: translateY(0);
+}
+
+/* ── Stats strip ── */
+.cm-stats {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 20px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.cm-stat-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.cm-stat-value {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #4f46e5;
+}
+
+/* ── Table ── */
+.cm-table-wrap {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 14px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.04);
+    overflow: auto;
+    max-height: 560px;
+}
+
+.cm-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.cm-table thead {
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.cm-table th {
+    padding: 14px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: #2c4a86;
+    position: sticky;
+    top: 0;
+    background: #f8fafc;
+    z-index: 10;
+}
+
+.cm-table td {
+    padding: 14px 20px;
+    font-size: 0.9rem;
+    color: #334155;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.cm-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.cm-table tbody tr:hover {
+    background: #fafbfc;
+}
+
+/* ── Cells ── */
+.cm-badge {
+    background: #f1f5f9;
+    color: #64748b;
+    padding: 3px 9px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+}
+
+.cm-group-name {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 0.92rem;
+}
+
+.cm-business-pill {
+    display: inline-flex;
+    padding: 4px 13px;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+/* ── Delete button ── */
+.cm-delete-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #ef4444;
+    padding: 6px;
+    border-radius: 7px;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.cm-delete-btn:hover {
+    background: #fee2e2;
+    color: #dc2626;
+    transform: scale(1.1);
+}
+
+/* ── Empty state ── */
+.cm-empty {
+    text-align: center;
+    padding: 3.5rem 2rem;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.cm-empty p {
+    font-size: 0.9rem;
+    margin: 0;
+    max-width: 340px;
+}
+
+/* ── Utilities ── */
+.text-center {
+    text-align: center;
+}
+
+/* ── Save button disabled ── */
+.cm-save-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ── Toast notifications ── */
+.cm-toast {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    animation: cm-fadeIn 0.25s ease;
+}
+
+.cm-toast--success {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.cm-toast--error {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+@keyframes cm-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ── Loading state ── */
+.cm-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 3rem 2rem;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+/* ── Spin animation ── */
+.cm-spin {
+    animation: cm-rotate 0.85s linear infinite;
+}
+
+@keyframes cm-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ── Category checklist section ── */
+.cm-cat-section {
+    margin-top: 22px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 18px;
+}
+
+.cm-cat-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.cm-cat-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #0f172a;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.cm-count-badge {
+    display: inline-flex;
+    padding: 2px 10px;
+    background: #ede9fe;
+    color: #4f46e5;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+/* Category search inside panel (not dropdown) */
+.cm-cat-search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    color: #94a3b8;
+    min-width: 200px;
+}
+
+.cm-cat-search-wrap input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: #1e293b;
+    width: 100%;
+}
+
+.cm-select-all-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border: 1.5px solid #e2e8f0;
+    background: #f8fafc;
+    color: #475569;
+    border-radius: 8px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    white-space: nowrap;
+}
+
+.cm-select-all-btn:hover {
+    background: #ede9fe;
+    border-color: #a5b4fc;
+    color: #4f46e5;
+}
+
+/* ── Category grid ── */
+.cm-cat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 10px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.cm-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 13px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 9px;
+    cursor: pointer;
+    background: #fff;
+    transition: border-color 0.15s, background 0.15s;
+    user-select: none;
+}
+
+.cm-cat-item:hover {
+    border-color: #a5b4fc;
+    background: #f5f3ff;
+}
+
+.cm-cat-item.checked {
+    border-color: #4f46e5;
+    background: #ede9fe;
+}
+
+.cm-cat-item input[type="checkbox"] {
+    width: 15px;
+    height: 15px;
+    accent-color: #4f46e5;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.cm-cat-name {
+    font-size: 13px;
+    color: #1e293b;
+    font-weight: 500;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cm-cat-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+    padding: 2rem 0;
+}
+
+/* ── Category type badges ── */
+.cm-cat-type {
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 5px;
+    text-transform: capitalize;
+    flex-shrink: 0;
+}
+
+.cm-cat-type--primary {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.cm-cat-type--secondary {
+    background: #e0f2fe;
+    color: #0369a1;
+}
+
+.cm-cat-type--sub {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+/* ── Drill-down / Action buttons ── */
+.cm-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border: 1.5px solid #e2e8f0;
+    cursor: pointer;
+    color: #475569;
+    padding: 6px;
+    border-radius: 7px;
+    transition: all 0.2s ease;
+}
+
+.cm-action-btn:hover {
+    background: #ede9fe;
+    border-color: #a5b4fc;
+    color: #4f46e5;
+}
+
+.cm-action-btn.active {
+    background: #4f46e5;
+    border-color: #4f46e5;
+    color: #fff;
+}
+
+.selected-row {
+    background-color: #f5f3ff !important;
+}
+
+.selected-row td {
+    border-bottom-color: #ddd6fe !important;
+}
+
+.cm-drilldown-panel {
+    animation: cm-slideUp 0.3s ease-out;
+}
+
+@keyframes cm-slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cm-cancel-btn {
+    padding: 10px 20px;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cm-cancel-btn:hover {
+    background: #f8fafc;
+    border-color: #cbd5e1;
+    color: #475569;
+}
+
+.cm-footer-actions {
+    border-top: 1px solid #f1f5f9;
+    padding-top: 20px;
+}

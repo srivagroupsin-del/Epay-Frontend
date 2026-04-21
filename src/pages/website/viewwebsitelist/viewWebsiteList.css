@@ -1,0 +1,214 @@
+.view-website-container {
+    padding: 20px;
+}
+
+.view-website-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.view-website-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.btn-add-new-website {
+    background: #1a237e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.view-website-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.view-website-card h3 {
+    margin-top: 0;
+    margin-bottom: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+.table-controls-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.entries-control {
+    font-size: 14px;
+    color: #666;
+}
+
+.entries-control select {
+    padding: 5px 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin: 0 5px;
+}
+
+.search-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #666;
+}
+
+.search-control input {
+    padding: 8px 12px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    width: 200px;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+.redesign-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.redesign-table th {
+    text-align: left;
+    padding: 15px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #333;
+    /* Mockup shows a solid line */
+}
+
+.redesign-table th .sort-icons {
+    display: inline-flex;
+    flex-direction: column;
+    margin-left: 10px;
+    vertical-align: middle;
+    font-size: 10px;
+    color: #ccc;
+}
+
+.redesign-table td {
+    padding: 15px;
+    font-size: 14px;
+    border-bottom: 1px dotted #e0e0e0;
+}
+
+.redesign-table tr:last-child td {
+    border-bottom: none;
+}
+
+.status-badge {
+    color: #28a745;
+    font-weight: 500;
+}
+
+.action-icons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-icon-edit {
+    background: #323da7;
+    color: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-icon-view {
+    background: #dc3545;
+    color: white;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.table-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.info-text {
+    font-size: 14px;
+    color: #666;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-page-nav {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 1px solid #323da7;
+    background: white;
+    color: #323da7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-page-nav:disabled {
+    border-color: #ccc;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.page-number {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #1a237e;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+/* Custom horizontal scrollbar matching mockup */
+.table-wrapper::-webkit-scrollbar {
+    height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 10px;
+}

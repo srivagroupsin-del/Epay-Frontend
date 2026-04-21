@@ -1,0 +1,150 @@
+.searchable-select-container {
+    position: relative;
+    width: 100%;
+}
+
+.searchable-select-label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: white;
+    padding: 0 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #4f46e5;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+}
+
+.searchable-select-wrapper {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background: white;
+    transition: all 0.2s;
+    position: relative;
+    padding: 0 15px; /* Exact same as standard inputs */
+    height: 44.5px;   /* Exact height of standard inputs with 12px padding */
+}
+
+.searchable-select-wrapper:hover {
+    border-color: #323da7;
+}
+
+.searchable-select-wrapper.active {
+    border-color: #323da7;
+    box-shadow: 0 0 0 3px rgba(50, 61, 167, 0.1);
+}
+
+.search-icon-inside {
+    color: #999;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.searchable-trigger-input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: #444;
+    background: transparent;
+    padding: 0;
+}
+
+.searchable-trigger-input::placeholder {
+    color: #999;
+}
+
+.trigger-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-left: 10px;
+}
+
+.clear-btn {
+    color: #999;
+    cursor: pointer;
+    transition: color 0.15s;
+}
+
+.clear-btn:hover {
+    color: #f44336;
+}
+
+.chevron {
+    transition: transform 0.2s ease;
+    color: #666;
+    cursor: pointer;
+}
+
+.chevron.open {
+    transform: rotate(180deg);
+}
+
+.searchable-select-content {
+    position: absolute;
+    top: calc(100% + 5px);
+    left: 0;
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    border: 1px solid #e0e0e0;
+    z-index: 1000;
+    overflow: hidden;
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.options-list {
+    max-height: 250px;
+    overflow-y: auto;
+    list-style: none;
+    margin: 0;
+    padding: 5px 0;
+}
+
+.options-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.options-list::-webkit-scrollbar-thumb {
+    background: #e0e0e0;
+    border-radius: 3px;
+}
+
+.option-item {
+    padding: 12px 15px;
+    font-size: 14px;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.option-item:hover {
+    background: #f5f6ff;
+    color: #323da7;
+}
+
+.option-item.selected {
+    background: #323da7;
+    color: white;
+    font-weight: 500;
+}
+
+.no-options {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    font-size: 14px;
+}

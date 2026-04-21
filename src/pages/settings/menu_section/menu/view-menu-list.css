@@ -1,0 +1,160 @@
+.view-menu-list-container {
+    padding: 24px;
+}
+
+.list-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.list-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.list-header-top h2 {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #111827;
+}
+
+.btn-add-new {
+    background: #4f46e5;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-new:hover {
+    background: #4338ca;
+}
+
+.list-title-sub {
+    padding: 24px 24px 8px 24px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.list-controls {
+    display: flex;
+    justify-content: flex-start;
+    gap: 40px;
+    align-items: center;
+    padding: 12px 24px;
+    margin-bottom: 8px;
+}
+
+.show-entries {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.entries-select {
+    padding: 6px 28px 6px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M10.293 3.293L6 7.586 1.707 3.293A1 1 0 00.293 4.707l5 5a1 1 0 001.414 0l5-5a1 1 0 10-1.414-1.414z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    appearance: none;
+    min-width: 65px;
+    cursor: pointer;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    margin-left: 650px;
+    gap: 20px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.search-input {
+    padding: 8px 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 300px;
+    outline: none;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.menu-list-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.menu-list-table th {
+    background: #fff;
+    padding: 16px 24px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    border-bottom: 1px solid #111827;
+    white-space: nowrap;
+}
+
+.sort-icon {
+    font-size: 12px;
+    color: #9ca3af;
+    margin-left: 6px;
+}
+
+.menu-list-table td {
+    padding: 16px 24px;
+    font-size: 14px;
+    color: #4b5563;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.status-text {
+    font-size: 14px;
+}
+
+.status-text.active {
+    color: #111827;
+}
+
+.status-text.inactive {
+    color: #e11d48;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+}
+
+/* Reuse existing pagination info styles */
+.pagination-info {
+    font-size: 14px;
+    color: #6b7280;
+}

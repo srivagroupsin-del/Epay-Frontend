@@ -1,0 +1,443 @@
+/* ========================================
+   ADD CATEGORY BRAND MAPPING STYLES
+   ======================================== */
+
+/* ===============================
+   PAGE / CARD CONTAINER
+================================ */
+.mcb-container,
+.mcb-card,
+.mcb-form-content,
+.mcb-category-selection-row {
+    position: relative;
+    overflow: visible !important;
+    transform: none !important;
+    filter: none !important;
+    perspective: none !important;
+}
+
+.mcb-container {
+    padding: 24px;
+    width: 100%;
+}
+
+.mcb-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.mcb-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.mcb-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+}
+
+/* ===============================
+   FILTER / FORM AREA
+================================ */
+.mcb-filters-row,
+.mcb-category-selection-row,
+.mcb-brand-filters-row {
+    position: relative;
+    z-index: 50;
+    /* Above table content */
+    overflow: visible !important;
+}
+
+.mcb-filters-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    margin-bottom: 25px;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    z-index: 10000;
+    /* Nuclear z-index to stay above brand section */
+}
+
+.mcb-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mcb-filter-group label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mcb-entries-select {
+    width: 80px;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    height: 40px;
+    font-size: 14px;
+    outline: none;
+    background: #fff;
+    cursor: pointer;
+}
+
+.mcb-entries-select:focus {
+    border-color: #323da7;
+}
+
+/* ===============================
+   DROPDOWN CONTAINER
+================================ */
+.mcb-dropdown-container,
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+    z-index: 2000;
+    /* High enough to stay above regular content */
+    overflow: visible !important;
+}
+
+.mcb-dropdown-container {
+    width: 250px;
+}
+
+.mcb-dropdown-container label,
+.mcb-filter-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+}
+
+/* ===============================
+   DROPDOWN TRIGGER
+================================ */
+.custom-select-trigger {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 42px;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.custom-select-trigger:hover {
+    border-color: #323da7;
+}
+
+/* ===============================
+   DROPDOWN MENU - BREAKOUT FIX
+================================ */
+.custom-select-options {
+    /* Absolute positioning relative to trigger container */
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+
+    z-index: 99999 !important;
+    /* SUPER HIGH STACKING */
+
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+
+    /* Ensure it has a solid background */
+    background-color: #ffffff !important;
+    min-width: 100%;
+}
+
+.mcb-overflow-visible {
+    overflow: visible !important;
+}
+
+.dropdown-search-wrapper {
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    background: #fff;
+    border-bottom: 1px solid #f3f4f6;
+    z-index: 10;
+}
+
+.mcb-brand-search-input,
+.dropdown-search-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.dropdown-search-input:focus {
+    border-color: #323da7;
+}
+
+.dropdown-items-list {
+    max-height: 280px;
+    overflow-y: auto;
+    background: #fff;
+}
+
+/* ===============================
+   DROPDOWN ITEMS
+================================ */
+.option-item {
+    padding: 12px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    transition: all 0.2s;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.option-item:last-child {
+    border-bottom: none;
+}
+
+.option-item:hover {
+    background: #f0f4ff;
+    color: #323da7;
+    padding-left: 18px;
+    /* Subtle hover effect */
+}
+
+/* ===============================
+   TABLE WRAPPER
+================================ */
+.mcb-table-wrapper {
+    overflow-x: auto;
+    overflow-y: visible;
+    /* IMPORTANT */
+    position: relative;
+    z-index: 1;
+    /* Keep low */
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+}
+
+/* ===============================
+   TABLE HEADER
+================================ */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.data-table thead th {
+    position: sticky;
+    top: 0;
+    background: #f9fafb;
+    z-index: 2;
+    /* LOW STACKING */
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.data-table tbody td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+/* ===============================
+   EXTRA SAFETY & PROBLEM OVERRIDES
+================================ */
+.mcb-card.problem-parent {
+    overflow: visible !important;
+    transform: none !important;
+    filter: none !important;
+    perspective: none !important;
+}
+
+/* UTILITIES */
+.mcb-ml-auto {
+    margin-left: auto;
+}
+
+.mcb-text-center {
+    text-align: center;
+    padding: 20px;
+}
+
+.mcb-col-id {
+    width: 50px;
+    text-align: center;
+}
+
+.mcb-col-check {
+    width: 60px;
+    text-align: center;
+}
+
+/* OTHERS */
+.mcb-pagination-wrapper {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 10px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.mcb-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    height: 42px;
+    padding-bottom: 2px;
+}
+
+.mcb-checkbox-label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.mcb-checkbox-label input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.mcb-brand-selection-section {
+    margin-top: 30px;
+    padding: 0 20px 20px;
+    position: relative;
+    z-index: 1;
+    /* Lower than top filters */
+}
+
+.mcb-brand-filters-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    border: 1px solid #e5e7eb;
+    flex-wrap: wrap;
+    /* Changed to wrap to prevent clipping in absolute mode */
+    overflow: visible !important;
+}
+
+.mcb-search-icon-wrapper {
+    position: relative;
+}
+
+.mcb-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+}
+
+.mcb-brand-search-input {
+    width: 250px;
+    padding: 8px 12px 8px 32px;
+    border-radius: 8px;
+    border: 1px solid #d1d5db;
+    height: 40px;
+    font-size: 14px;
+    outline: none;
+}
+
+.mcb-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    border-top: 1px solid #e5e7eb;
+    padding: 25px 20px;
+}
+
+.mcb-btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.mcb-btn-primary {
+    background: #323da7;
+    color: #fff;
+}
+
+.mcb-btn-primary:hover {
+    background: #272f85;
+}
+
+.mcb-btn-secondary {
+    background: #6b7280;
+    color: #fff;
+}
+
+.mcb-btn-secondary:hover {
+    background: #4b5563;
+}
+
+.mcb-btn-danger {
+    background: #ef4444;
+    color: #fff;
+}
+
+.mcb-btn-danger:hover {
+    background: #dc2626;
+}
+
+.mcb-btn-small {
+    padding: 6px 14px;
+    font-size: 13px;
+}
+
+.mcb-table-checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.mcb-brand-name-cell {
+    font-weight: 500;
+}

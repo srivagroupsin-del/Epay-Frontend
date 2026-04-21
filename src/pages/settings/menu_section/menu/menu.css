@@ -1,0 +1,108 @@
+.page-container {
+  padding: 20px;
+  background: #f5f6fa;
+  font-family: Arial, sans-serif;
+}
+
+/* Card */
+.card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* Form */
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+input {
+  width: 300px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Buttons */
+.btn-group {
+  margin-top: 10px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.btn-save {
+  background: #28a745;
+  color: white;
+}
+
+.btn-cancel {
+  background: #5bc0de;
+  color: white;
+}
+
+.btn-add {
+  background: #2c3dd7;
+  color: white;
+}
+
+/* List Header */
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+th {
+  background: #f0f0f0;
+}
+
+.empty {
+  text-align: center;
+  color: #999;
+}
+
+/* Status */
+.status.active {
+  color: green;
+  font-weight: bold;
+}
+
+/* Action */
+.action-btn {
+  padding: 5px 10px;
+  border: none;
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.action-btn.delete {
+  background: #dc3545;
+  color: white;
+}

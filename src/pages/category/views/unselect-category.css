@@ -1,0 +1,105 @@
+/* src/Pages/Dashboard/SideBar_pages/Category/views/unselect-category.css */
+.unselect-page {
+    background: #f8f9fa;
+    min-height: calc(100vh - 100px);
+    padding: 20px;
+}
+
+.unselect-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.unselect-header h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+.table-wrapper {
+    position: relative;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    background: #fff;
+    overflow: auto;
+    max-height: 550px;
+}
+
+.unselect-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.unselect-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.unselect-table tbody td {
+    padding: 12px 16px;
+    font-size: 14px;
+    color: #4b5563;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.unselect-table tr:hover {
+    background: #f9fafb;
+}
+
+.btn-save-unselected {
+    background: #22c55e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn-save-unselected:hover {
+    background: #16a34a;
+}
+
+.badge {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.badge.active {
+    background: #ecfdf5;
+    color: #059669;
+}
+
+.badge.inactive {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.photo-cell img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.category-name-cell {
+    font-weight: 600;
+    color: #111827;
+}

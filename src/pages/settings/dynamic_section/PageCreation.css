@@ -1,0 +1,178 @@
+/* ================= PAGE CREATION LAYOUT ================= */
+
+.page-creation-container {
+    padding: 20px;
+    background: #fff;
+}
+
+.page-creation-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-top: 10px;
+}
+
+.page-creation-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #f3f4f6;
+    background: #fff;
+}
+
+.page-creation-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+    font-weight: 600;
+}
+
+.page-creation-body {
+    padding: 30px 25px;
+}
+
+.page-creation-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    margin-bottom: 25px;
+}
+
+.page-creation-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.page-creation-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.page-creation-group input,
+.page-creation-group select,
+.page-creation-group textarea {
+    padding: 12px 15px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+    background: #fff;
+    color: #111827;
+}
+
+.page-creation-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.page-creation-group input:focus,
+.page-creation-group select:focus,
+.page-creation-group textarea:focus {
+    border-color: #323da7;
+    box-shadow: 0 0 0 3px rgba(50, 61, 167, 0.1);
+}
+
+.page-creation-group input::placeholder,
+.page-creation-group textarea::placeholder {
+    color: #9ca3af;
+}
+
+/* ================= ACTIONS ================= */
+
+.page-creation-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.btn-cancel-page {
+    background: #e5e7eb;
+    color: #4b5563;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-cancel-page:hover {
+    background: #d1d5db;
+}
+
+.btn-save-page {
+    background: #22c55e;
+    color: #fff;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-save-page:hover {
+    background: #16a34a;
+}
+
+/* ================= TABLE STYLES ================= */
+
+.page-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.page-table th {
+    background: #f9fafb;
+    padding: 15px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.page-table td {
+    padding: 15px;
+    font-size: 14px;
+    color: #4b5563;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.status-badge.active {
+    background: #def7ec;
+    color: #03543f;
+}
+
+.status-badge.inactive {
+    background: #fde8e8;
+    color: #9b1c1c;
+}
+
+.btn-delete-page {
+    background: #ef4444;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-delete-page:hover {
+    background: #dc2626;
+}

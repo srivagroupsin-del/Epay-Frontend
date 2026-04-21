@@ -1,0 +1,95 @@
+/* MenuTitlePage.css */
+
+.menu-title-container {
+    padding: 24px;
+    width: 100%;
+    display: block;
+}
+
+.menu-title-form {
+    width: 100%;
+    max-width: 1000px;
+   margin-left: 10px;
+}
+
+.menu-title-form-grid {
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 15px;
+}
+
+.menu-title-field-wrapper {
+    width: 300px;
+}
+
+.menu-title-list-card {
+    margin: 30px auto 0;
+    width: 100%;
+    max-width: 1000px;
+}
+
+.menu-title-list-header {
+    padding: 0;
+    margin-bottom: 20px;
+}
+
+.menu-title-controls {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-title-controls-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-title-select-limit {
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    outline: none;
+}
+
+.menu-title-th-action {
+    text-align: center;
+}
+
+.th-content {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    color: #374151;
+    white-space: nowrap;
+}
+
+.menu-title-action-cell {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.menu-title-mapping-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.menu-title-pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-title-pagination-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+.pagination-text {
+    font-size: 14px;
+    color: #666;
+}

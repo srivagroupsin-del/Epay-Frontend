@@ -1,0 +1,139 @@
+.preview-tabs-container {
+    display: flex;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.preview-sidebar {
+    width: 250px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.sidebar-header {
+    padding: 15px 20px;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-item {
+    padding: 12px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 14px;
+    color: #555;
+}
+
+.sidebar-item.active {
+    background: #f1f3f9;
+    color: #1a237e;
+    font-weight: 600;
+    border-left: 4px solid #1a237e;
+}
+
+.preview-content {
+    flex: 1;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 30px;
+    min-height: 400px;
+}
+
+.menu-banner {
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 4px;
+    border-left: 4px solid #1a237e;
+    margin-bottom: 30px;
+    font-weight: 600;
+    color: #333;
+    font-size: 18px;
+}
+
+.heading-tabs {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    overflow-x: auto;
+}
+
+.heading-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+    font-size: 14px;
+    color: #555;
+}
+
+.heading-tab.active {
+    background: #f1f3f9;
+    border-color: #1a237e;
+    color: #1a237e;
+    font-weight: 600;
+}
+
+.heading-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.checkboxes-preview-box {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 25px;
+}
+
+.checkboxes-title {
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.checkboxes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.preview-checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 15px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #444;
+}
+
+.preview-checkbox-item input {
+    width: 18px;
+    height: 18px;
+    cursor: default;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px;
+    color: #999;
+}

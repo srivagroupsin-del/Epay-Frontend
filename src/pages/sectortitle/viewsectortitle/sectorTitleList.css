@@ -1,0 +1,348 @@
+/* ===============================
+   PAGE CONTAINER
+================================ */
+.page-container {
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: #fff;
+  padding: 20px;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   PAGE HEADER
+================================ */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+
+.page-header h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.breadcrumb {
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ===============================
+   PRIMARY BUTTON
+================================ */
+.btn-primary {
+  background: #323da7;
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #272f85;
+}
+
+/* ===============================
+   CARD
+================================ */
+.card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 15px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* ===============================
+   TABLE CONTROLS
+================================ */
+.table-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 14px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.table-controls select,
+.table-controls input {
+  margin-left: 6px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+/* ===============================
+   TABLE WRAPPER (SCROLL AREA)
+================================ */
+.table-wrapper {
+  width: 100%;
+  max-height: 400px;
+  /* Adjust height if needed */
+  overflow-y: auto;
+  /* Vertical scroll */
+  overflow-x: auto;
+  /* Horizontal scroll */
+  position: relative;
+  border-radius: 8px;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+
+/* HEADER STICKY */
+.data-table thead th {
+  position: sticky;
+  top: 0;
+  background: #f9fafb;
+  z-index: 10;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* CELLS */
+.data-table th,
+.data-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: left;
+  font-size: 14px;
+}
+
+.data-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* ===============================
+   TABLE IMAGE
+================================ */
+.photo-cell {
+  width: 80px;
+  text-align: center;
+}
+
+.table-img-wrapper {
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  background: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.table-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.table-img-wrapper.empty {
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* ===============================
+   STATUS
+================================ */
+.status.active {
+  background: #dcfce7;
+  color: #166534;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ===============================
+   ACTION ICONS
+================================ */
+.action-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.icon-btn {
+  background: none;
+  border: 1px solid transparent;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  /* for <a> tags */
+  line-height: 1;
+  /* for <a> tags */
+}
+
+.icon-btn.edit {
+  color: #323da7;
+}
+
+.icon-btn.edit:hover {
+  background: #eff6ff;
+  border-color: #323da7;
+}
+
+.icon-btn.delete {
+  color: #ef4444;
+}
+
+.icon-btn.delete:hover {
+  background: #fef2f2;
+  border-color: #ef4444;
+}
+
+/* ===============================
+   TABLE FOOTER
+================================ */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ===============================
+   PAGINATION
+================================ */
+.pagination {
+  display: flex;
+  align-items: center;
+}
+
+.pagination button {
+  margin-left: 5px;
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+.pagination .active {
+  background: #4f46e5;
+  color: #fff;
+  border-color: #4f46e5;
+}
+
+/* ===============================
+   PAGE JUMP STYLES
+================================ */
+.page-jump-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.jump-input {
+  width: 65px;
+  height: 38px;
+  text-align: center;
+  border: 1.5px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #323da7;
+  outline: none;
+  transition: all 0.2s;
+  background: #fff;
+}
+
+.jump-input:focus {
+  border-color: #323da7;
+  box-shadow: 0 0 0 3px rgba(50, 61, 167, 0.1);
+}
+
+.pagination-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pagination-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  color: #323da7;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 0;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  border-color: #323da7;
+  background: #e9eefd;
+}
+
+.pagination-btn.active {
+  background: #323da7;
+  color: #ffffff;
+  border-color: #323da7;
+}
+
+.pagination-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.pagination-ellipsis {
+  color: #6b7280;
+  font-weight: 600;
+  padding: 0 5px;
+}
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================ */
+@media (max-width: 768px) {
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-primary {
+    width: 100%;
+  }
+
+  .table-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

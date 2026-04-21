@@ -1,0 +1,283 @@
+.add-sector-menu-container {
+    padding: 20px;
+}
+
+.add-sector-menu-header {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 30px;
+}
+
+.add-sector-menu-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.sector-menu-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Sidebar List Styles */
+.sector-menu-sidebar {
+    width: 250px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+.md-sidebar-header {
+    padding: 15px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.md-sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.md-sidebar-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    border-bottom: 1px solid #f9f9f9;
+    transition: all 0.2s;
+}
+
+.md-sidebar-item:last-child {
+    border-bottom: none;
+}
+
+.md-sidebar-item:hover {
+    background-color: #f5f7fa;
+}
+
+.md-sidebar-item.active {
+    background-color: #f1f3f5;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Detail Card Styles */
+.sector-menu-detail {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+}
+
+.detail-content-box {
+    width: 100%;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+    font-weight: 600;
+    font-size: 16px;
+    color: #000;
+}
+
+/* Existing form controls integration (if needed) */
+.add-menu-form-overlay {
+    margin-top: 30px;
+}
+
+/* Multi Tab Menu Container Styles */
+.multitab-menu-container {
+    margin-bottom: 30px;
+}
+
+.multitab-menu-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.multitab-form-header {
+    background: linear-gradient(135deg, #1a237e 0%, #283593 100%);
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+}
+
+.multitab-form-header h3 {
+    margin: 0 0 8px 0;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.multitab-form-header p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.multitab-menu-card form {
+    padding: 30px;
+}
+
+/* Titles Display Section Styles */
+.titles-display-container {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    margin-top: 30px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.titles-display-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 20px 30px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.titles-display-header h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1a237e;
+}
+
+.titles-display-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.titles-content {
+    padding: 30px;
+}
+
+.titles-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.title-card {
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.title-card:hover {
+    border-color: #1a237e;
+    box-shadow: 0 4px 12px rgba(26, 35, 126, 0.1);
+}
+
+.title-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.title-info h4 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a237e;
+}
+
+.title-count {
+    background: #1a237e;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.menu-list {
+    display: grid;
+    gap: 10px;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.menu-item:hover {
+    border-color: #1a237e;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.menu-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.menu-order {
+    font-size: 12px;
+    color: #6c757d;
+    background: #e9ecef;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.no-menus, .no-selection {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.no-selection {
+    background: #f8f9fa;
+    border: 1px dashed #dee2e6;
+    border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .multitab-form-header,
+    .titles-display-header {
+        padding: 15px 20px;
+    }
+    
+    .multitab-menu-card form,
+    .titles-content {
+        padding: 20px;
+    }
+    
+    .title-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .menu-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+}

@@ -1,0 +1,149 @@
+/* =====================================
+   FULL-SCREEN LOADING OVERLAY
+===================================== */
+
+/* Backdrop */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    /* top:0 right:0 bottom:0 left:0 */
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 14, 30, 0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    /* Fade-in */
+    animation: overlayFadeIn 0.25s ease forwards;
+
+    /* Block all pointer events */
+    pointer-events: all;
+    user-select: none;
+}
+
+@keyframes overlayFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* Centered card */
+.loading-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 36px 48px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+
+    animation: boxSlideUp 0.3s ease forwards;
+}
+
+@keyframes boxSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ─── Spinner ─── */
+.loading-spinner {
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+
+.spinner-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    animation: spinnerRotate 1.2s cubic-bezier(0.55, 0.15, 0.45, 0.85) infinite;
+}
+
+/* Ring 1 – outermost, blue */
+.spinner-ring:nth-child(1) {
+    border-top-color: #6366f1;
+    animation-duration: 1.0s;
+}
+
+/* Ring 2 – middle, lighter */
+.spinner-ring--2 {
+    inset: 10px;
+    border-top-color: #a5b4fc;
+    animation-duration: 1.4s;
+    animation-direction: reverse;
+}
+
+/* Ring 3 – innermost, accent */
+.spinner-ring--3 {
+    inset: 20px;
+    border-top-color: #e0e7ff;
+    animation-duration: 0.8s;
+}
+
+@keyframes spinnerRotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ─── Message ─── */
+.loading-message {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: 0.3px;
+    text-align: center;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* Pulsing text animation */
+    animation: messagePulse 1.8s ease-in-out infinite;
+}
+
+@keyframes messagePulse {
+
+    0%,
+    100% {
+        opacity: 0.85;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* ─── Responsive ─── */
+@media (max-width: 480px) {
+    .loading-box {
+        padding: 28px 32px;
+        border-radius: 16px;
+        margin: 0 16px;
+    }
+
+    .loading-spinner {
+        width: 52px;
+        height: 52px;
+    }
+
+    .loading-message {
+        font-size: 14px;
+    }
+}

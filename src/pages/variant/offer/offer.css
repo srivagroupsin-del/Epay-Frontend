@@ -1,0 +1,245 @@
+/* ============================================================================
+   OFFER MANAGEMENT STYLES
+============================================================================ */
+
+.add-unit-type-header {
+    margin-bottom: 20px;
+}
+
+.add-unit-type-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+/* Tab Styles */
+.tax-tabs-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+    background: #f3f0ff; /* Light Purple Background */
+    padding: 6px;
+    border-radius: 12px;
+    width: fit-content;
+}
+
+.tax-tab-btn {
+    padding: 10px 24px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tax-tab-btn.active {
+    background: #7c3aed; /* Purple */
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.2);
+}
+
+/* Sub-tabs */
+.sub-tabs-container {
+    display: flex;
+    gap: 25px;
+    margin-bottom: 20px;
+    padding-left: 5px;
+    border-bottom: 2px solid #e9d5ff;
+}
+
+.sub-tab-btn {
+    padding: 8px 4px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #9ca3af;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.sub-tab-btn.active {
+    color: #7c3aed;
+}
+
+.sub-tab-btn.active::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #7c3aed;
+    border-radius: 10px;
+}
+
+/* Form Card */
+.unit-type-card {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+    border: 1px solid #f3e8ff;
+}
+
+.form-group {
+    position: relative;
+    width: 100%;
+}
+
+.form-group label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: white;
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 800;
+    color: #7c3aed;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    z-index: 10;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e9d5ff;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #1e293b;
+    transition: all 0.2s;
+}
+
+.form-group input:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+    outline: none;
+}
+
+/* Status Checkbox */
+.status-row-fixed {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.status-label-fixed {
+    font-size: 15px;
+    font-weight: 600;
+    color: #581c87;
+}
+
+.blue-square-checkbox {
+    width: 28px;
+    height: 28px;
+    background: #7c3aed;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: white;
+    transition: all 0.2s;
+}
+
+.blue-square-checkbox.inactive {
+    background: #f3e8ff;
+    color: transparent;
+}
+
+/* Action Buttons */
+.form-actions-centered {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-save-unit {
+    padding: 12px 40px;
+    background: #9333ea;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-save-unit:hover {
+    background: #7e22ce;
+    transform: translateY(-1px);
+}
+
+/* Table */
+.tax-list-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    border: 1px solid #f3e8ff;
+}
+
+.redesign-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.redesign-table th {
+    background: #faf5ff;
+    padding: 16px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 800;
+    color: #7c3aed;
+    text-transform: uppercase;
+    border-bottom: 1px solid #f3e8ff;
+}
+
+.redesign-table td {
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #4b5563;
+    border-bottom: 1px solid #faf5ff;
+}
+
+.redesign-table tr:hover td {
+    background: #faf5ff;
+}
+
+/* Badges */
+.status-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.status-badge.active {
+    background: #f0fdf4;
+    color: #166534;
+}
+
+.status-badge.inactive {
+    background: #fef2f2;
+    color: #991b1b;
+}
+
+/* Delete button */
+.btn-icon-delete {
+    background: #fff1f2;
+    color: #e11d48;
+    border: 1px solid #fecdd3;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-icon-delete:hover {
+    background: #ffe4e6;
+}

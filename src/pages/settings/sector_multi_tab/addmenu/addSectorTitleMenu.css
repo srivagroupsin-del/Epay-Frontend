@@ -1,0 +1,172 @@
+/* Consistently apply the shared premium design for Sector Multi Tab */
+.container {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 5px;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #e0e0e0;
+    margin: 15px 0 25px 0;
+}
+
+/* Form Styles */
+.merged-container {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 25px;
+    align-items: flex-end;
+}
+
+.input-floating-group {
+    position: relative;
+    flex: 1;
+    min-width: 250px;
+}
+
+.input-floating-group label {
+    position: absolute;
+    top: -10px;
+    left: 12px;
+    background: white;
+    padding: 0 4px;
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+    z-index: 10;
+}
+
+.input-floating-group input,
+.input-floating-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 15px;
+    color: #000000;
+    background-color: #ffffff;
+    transition: all 0.2s;
+    height: 48px;
+}
+
+/* Button Row */
+.btn-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 40px;
+}
+
+.btn {
+    padding: 12px 35px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+}
+
+.btn.save {
+    background: #28a745;
+    color: #fff;
+}
+
+.btn.cancel {
+    background: #5bc0de;
+    color: #fff;
+}
+
+.btn.add {
+    background: #1a237e;
+    color: #fff;
+    padding: 8px 18px;
+    font-size: 14px;
+}
+
+/* Table Card */
+.table-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.redesign-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.redesign-table th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+    font-weight: 700;
+}
+
+.redesign-table td {
+    padding: 12px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+}
+
+.action.edit {
+    background: #1a237e;
+}
+
+.action.delete {
+    background: #ef4444;
+}
+
+.badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.badge.active {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.badge.inactive {
+    background: #fee2e2;
+    color: #991b1b;
+}

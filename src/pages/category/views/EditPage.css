@@ -1,0 +1,195 @@
+/* EditPage.css */
+
+.edit-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+    background: #f8fafc;
+    min-height: 100vh;
+}
+
+.edit-form-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    overflow: visible;
+    /* Important for dropdowns */
+}
+
+.edit-header {
+    padding: 24px 32px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    border-radius: 20px 20px 0 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.back-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.back-btn:hover {
+    background: #f8fafc;
+    color: #323da7;
+    border-color: #323da7;
+}
+
+.title-box h1 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+    letter-spacing: -0.025em;
+}
+
+.title-box p {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin: 4px 0 0;
+}
+
+.save-btn {
+    background: #323da7;
+    color: #ffffff;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(50, 61, 167, 0.25);
+    transition: all 0.3s;
+}
+
+.save-btn:hover {
+    background: #28318a;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(50, 61, 167, 0.3);
+}
+
+.edit-content-grid {
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 40px;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #334155;
+    margin: 0;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #f1f5f9;
+    width: fit-content;
+}
+
+.dropdown-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 24px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.input-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+}
+
+.premium-text-input {
+    height: 48px;
+    padding: 0 16px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    outline: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    background: #fcfdfe;
+}
+
+.premium-text-input:focus {
+    border-color: #323da7;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(50, 61, 167, 0.05);
+}
+
+.radio-group {
+    display: flex;
+    gap: 16px;
+}
+
+.radio-item {
+    padding: 12px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    color: #64748b;
+}
+
+.radio-item input {
+    display: none;
+}
+
+.radio-item.checked {
+    background: rgba(50, 61, 167, 0.05);
+    border-color: #323da7;
+    color: #323da7;
+}
+
+@media (max-width: 768px) {
+    .edit-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .header-actions {
+        width: 100%;
+    }
+
+    .save-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

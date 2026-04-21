@@ -1,0 +1,539 @@
+/* 
+  Premium Design for Sector Preview Tabs
+  Strictly following the provided image reference.
+*/
+
+.preview-page-container {
+    background-color: #f8fafc; /* Very light page background matching other pages */
+    min-height: calc(100vh - 70px);
+    font-family: 'Inter', sans-serif;
+}
+
+.preview-layout {
+    display: flex;
+    max-width: 1400px;
+    margin: 0;
+    min-height: calc(100vh - 70px);
+}
+
+
+.dropdown {
+  position: relative;
+  width: 240px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.dropdown-header {
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dropdown-header:hover {
+  border-color: #888;
+}
+
+.arrow {
+  border: solid #555;
+  border-width: 0 2px 2px 0;
+  padding: 4px;
+  transform: rotate(45deg);
+  transition: transform 0.2s ease;
+  margin-left: 10px;
+}
+
+.arrow.open {
+  transform: rotate(-135deg);
+}
+
+.dropdown-list {
+  position: absolute;
+  top: 110%;
+  left: 0;
+  right: 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  z-index: 1000;
+}
+
+.dropdown-item {
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.dropdown-item:hover {
+  background-color: #f3f3f3;
+}
+
+/* ============================
+   LEFT SIDEBAR
+============================ */
+.preview-sidebar {
+    width: 250px;
+    min-width: 250px;
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+    padding: 24px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    letter-spacing: 0.5px;
+    padding: 0 20px 20px 20px;
+}
+
+.sidebar-menu-list {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
+}
+
+.sidebar-accordion {
+    width: 100%;
+}
+
+.sidebar-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    color: #64748b;
+    margin-bottom: 8px;
+    background: transparent;
+}
+
+.sidebar-dropdown-toggle:hover {
+    background-color: #f1f5f9;
+}
+
+.sidebar-dropdown-toggle.active {
+    background-color: #f8fafc;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.toggle-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.chevron-icon {
+    transition: transform 0.3s ease;
+}
+
+.chevron-icon.open {
+    transform: rotate(180deg);
+}
+
+.sidebar-dropdown-content {
+    overflow: hidden;
+    padding: 0 12px 15px 8px;
+}
+
+.sidebar-search-wrapper {
+    position: relative;
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+.sidebar-search-wrapper .search-icon {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #94a3b8;
+    pointer-events: none;
+}
+
+.sidebar-search-input {
+    width: 100%;
+    padding: 8px 12px 8px 32px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    font-size: 13px;
+    color: #334155;
+    background: #f8fafc;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.sidebar-search-input:focus {
+    border-color: #cbd5e1;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(226, 232, 240, 0.4);
+}
+
+.sidebar-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #64748b;
+}
+
+.sidebar-menu-item:hover {
+    background-color: #f8fafc;
+    color: #0f172a;
+}
+
+.sidebar-menu-item.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.sidebar-menu-item.active .sidebar-menu-icon {
+    color: #2563eb;
+}
+
+.sidebar-menu-text {
+    font-size: 13.5px;
+    text-transform: capitalize;
+}
+
+.sidebar-state-text {
+    padding: 20px;
+    font-size: 14px;
+    color: #94a3b8;
+    text-align: center;
+}
+
+/* ============================
+   RIGHT MAIN CONTENT
+============================ */
+.preview-main {
+    flex: 1;
+    padding: 30px 40px;
+    background-color: #f8fafc;
+}
+
+.breadcrumbs {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 15px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 25px;
+}
+
+/* CUSTOM DROPDOWN SECTION */
+.tab-heading-selection-section {
+    width: 100%;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+}
+
+.selection-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 12px;
+}
+
+.custom-dropdown-container {
+    position: relative;
+}
+
+.custom-dropdown-trigger {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 12px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-dropdown-trigger:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+}
+
+.custom-dropdown-trigger.open {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.trigger-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    color: #334155;
+}
+
+.left-icon {
+    color: #94a3b8;
+}
+
+.arrow-icon {
+    color: #94a3b8;
+    transition: transform 0.2s ease;
+}
+
+.arrow-icon.rotated {
+    transform: rotate(180deg);
+}
+
+.custom-dropdown-list {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    z-index: 100;
+    padding: 6px;
+    overflow: hidden;
+}
+
+.custom-dropdown-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #475569;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.custom-dropdown-item:last-child {
+    margin-bottom: 0;
+}
+
+.custom-dropdown-item:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+.custom-dropdown-item.selected {
+    background: #eff6ff;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.item-icon {
+    display: flex;
+    align-items: center;
+    color: #64748b;
+}
+
+.custom-dropdown-item.selected .item-icon {
+    color: #2563eb;
+}
+
+.check-icon {
+    color: #2563eb;
+}
+
+/* INPUT FIELD */
+.description-input-container {
+    margin-bottom: 25px;
+}
+
+.description-input {
+    width: 100%;
+    padding: 16px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    font-size: 14px;
+    color: #64748b;
+    outline: none;
+    cursor: default;
+}
+
+/* HEADING TABS */
+.heading-tabs-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.heading-pill-tab {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    color: #475569;
+}
+
+.heading-pill-tab:hover {
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+}
+
+.heading-pill-tab.active {
+    background-color: #0f172a; /* Dark almost black from image */
+    color: #ffffff;
+    border-color: #0f172a;
+}
+
+/* CHECKBOX CONTAINER CARD */
+.checkbox-card-container {
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    min-height: 200px;
+    margin-bottom: 30px;
+}
+
+.checkbox-card-header {
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed transparent;
+}
+
+.checkbox-card-title {
+    font-weight: 700;
+    font-size: 16px;
+    color: #334155;
+}
+
+.help-icon {
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.checkbox-pills-container {
+    padding: 0 24px 24px 24px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.checkbox-pill {
+    position: relative;
+    padding: 10px 24px;
+    background-color: #f1f5f9;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid transparent;
+}
+
+.checkbox-pill:hover {
+    background-color: #e2e8f0;
+}
+
+.checkbox-pill.active {
+    background-color: #eff6ff;
+    color: #2563eb;
+    border-color: #bfdbfe;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+}
+
+.corner-tick {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    color: #28a745;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.no-data-text {
+    color: #94a3b8;
+    font-size: 14px;
+    width: 100%;
+}
+
+.empty-state-main {
+    text-align: left;
+    color: #94a3b8;
+    font-size: 15px;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+/* BOTTOM ACTION ROW */
+.bottom-action-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.btn-save-config {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    background-color: #16a34a; /* Green from the image */
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
+}
+
+.btn-save-config:hover {
+    background-color: #15803d;
+    transform: translateY(-1px);
+}
+
+.btn-save-config:active {
+    transform: translateY(0);
+}

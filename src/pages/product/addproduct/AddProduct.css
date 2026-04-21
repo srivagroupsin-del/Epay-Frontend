@@ -1,0 +1,365 @@
+/* src/Pages/Dashboard/SideBar_pages/Product/AddProduct/AddProduct.css */
+
+.add-product-container {
+    padding: 24px;
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+.product-form-card {
+    max-width: 1000px;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    padding: 35px;
+    margin: 0 auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    overflow: visible !important;
+    position: relative;
+    /* Ensure labels and dropdowns aren't clipped */
+}
+
+
+.product-form-header {
+    margin-bottom: 35px;
+    border-bottom: 1px dashed #e2e8f0;
+    padding-bottom: 15px;
+}
+
+.product-form-header h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0;
+}
+
+.product-form-header .subtitle {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 6px;
+}
+
+.product-form-grid {
+    display: grid;
+    gap: 28px;
+    grid-template-columns: repeat(2, 1fr);
+    margin-bottom: 30px;
+}
+
+@media (max-width: 850px) {
+    .product-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Image Upload Section */
+.product-image-section {
+    grid-column: 1 / -1;
+    background: #fdfdfd;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.image-status-flex {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.image-preview-box {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: #fff;
+    transition: all 0.2s;
+    overflow: visible;
+}
+
+.image-preview-box:hover {
+    border-color: #3b82f6;
+    background: #f8fafc;
+}
+
+.image-preview-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.image-preview-box .delete-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ef4444;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    z-index: 10;
+}
+
+.image-preview-box .delete-btn:hover {
+    transform: scale(1.1);
+    background: #dc2626;
+}
+
+.empty-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.empty-placeholder::before {
+    content: '+';
+    font-size: 48px;
+    color: #cbd5e1;
+    font-weight: 300;
+    transition: all 0.2s;
+}
+
+.empty-placeholder:hover::before {
+    color: #3b82f6;
+    transform: scale(1.1);
+}
+
+
+.image-upload-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.upload-button-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #3b82f6;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.upload-button-label:hover {
+    background: #2563eb;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+/* Status Section in Image Row */
+.status-select-container {
+    min-width: 180px;
+}
+
+/* Form Actions */
+.product-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 25px;
+    border-top: 1px solid #e2e8f0;
+}
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 12px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-submit {
+    background: #10b981;
+    color: white;
+    padding: 12px 35px;
+    border-radius: 10px;
+    font-weight: 700;
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
+}
+
+.btn-submit:hover {
+    background: #059669;
+    transform: translateY(-1px);
+}
+
+.btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Custom Dropdown Styles (Nested in AddProduct) */
+/* Ensure labels from index.css have room and are visible */
+.inline-form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+    z-index: 1;
+}
+
+.inline-form-field.full-width {
+    grid-column: 1 / -1;
+    z-index: 1;
+}
+
+/* Elevate the field being interacted with */
+.inline-form-field:focus-within,
+.inline-form-field.active {
+    z-index: 9999 !important;
+}
+
+/* Ensure custom dropdown components don't cover the absolute label */
+.custom-dropdown {
+    position: relative;
+    width: 100%;
+    /* No overflow: hidden here */
+}
+
+.custom-dropdown label,
+.inline-form-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #475569;
+    letter-spacing: 0.3px;
+    margin-bottom: 4px;
+}
+
+
+.custom-select-trigger {
+    position: relative;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #1e293b;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-select-trigger:focus-within,
+.custom-select-trigger.active {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    outline: none;
+}
+
+.custom-select-trigger span.placeholder-text {
+    color: #9ba3af;
+}
+
+
+.custom-select-trigger:hover {
+    border-color: #3b82f6;
+}
+
+.custom-select-trigger.disabled {
+    background: #f8fafc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.custom-select-options {
+    position: relative;
+    /* Changing to relative to push other fields down as per requirement */
+    margin-top: 10px;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    max-height: 320px;
+    overflow-y: auto;
+    z-index: 10;
+    box-shadow: none;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-search-wrapper {
+    padding: 12px;
+    position: sticky;
+    top: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 10;
+}
+
+.search-icon-inside {
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-search-input {
+    flex: 1;
+    padding: 8px 10px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 13px;
+    outline: none;
+    background: #f8fafc;
+}
+
+.dropdown-search-input:focus {
+    border-color: #3b82f6;
+}
+
+.option-item {
+    padding: 12px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #475569;
+    transition: all 0.2s;
+}
+
+.option-item:hover {
+    background: #f8fafc;
+    color: #3b82f6;
+    padding-left: 20px;
+}

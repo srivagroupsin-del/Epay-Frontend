@@ -1,0 +1,97 @@
+.add-sector-menu-container {
+    padding: 20px;
+}
+
+.add-sector-menu-header {
+    background-color: #fff;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 30px;
+}
+
+.add-sector-menu-header h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.sector-menu-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+/* Sidebar List Styles */
+.sector-menu-sidebar {
+    width: 250px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+}
+
+.md-sidebar-header {
+    padding: 15px;
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.md-sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.md-sidebar-item {
+    padding: 12px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #555;
+    border-bottom: 1px solid #f9f9f9;
+    transition: all 0.2s;
+}
+
+.md-sidebar-item:last-child {
+    border-bottom: none;
+}
+
+.md-sidebar-item:hover {
+    background-color: #f5f7fa;
+}
+
+.md-sidebar-item.active {
+    background-color: #f1f3f5;
+    color: #000;
+    font-weight: 600;
+}
+
+/* Detail Card Styles */
+.sector-menu-detail {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    border: 1px solid #e0e0e0;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+}
+
+.detail-content-box {
+    width: 100%;
+    padding: 15px 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #3498db;
+    font-weight: 600;
+    font-size: 16px;
+    color: #000;
+}
+
+/* Existing form controls integration (if needed) */
+.add-menu-form-overlay {
+    margin-top: 30px;
+}
