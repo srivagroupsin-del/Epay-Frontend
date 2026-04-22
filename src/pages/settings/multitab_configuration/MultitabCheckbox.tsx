@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Table, Button, Modal, Form, Input, message, Card } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { PlusOutlined, EditOutlined } from "@ant-design/icons";
 import { MultitabConfigApi } from "../../../api/multitabConfig.api";
 
 const MultitabCheckbox: React.FC = () => {
   const [checkboxes, setCheckboxes] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
   const [form] = Form.useForm();
 
   const fetchCheckboxes = async () => {
@@ -26,15 +27,27 @@ const MultitabCheckbox: React.FC = () => {
   }, []);
 
   const handleAdd = () => {
+    setEditingId(null);
     form.resetFields();
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (record: any) => {
+    setEditingId(record.id);
+    form.setFieldsValue(record);
     setIsModalOpen(true);
   };
 
   const handleModalSubmit = async () => {
     try {
       const values = await form.validateFields();
-      await MultitabConfigApi.createCheckbox(values);
-      message.success("Checkbox added successfully");
+      if (editingId) {
+        await MultitabConfigApi.updateCheckbox(editingId, values);
+        message.success("Checkbox updated successfully");
+      } else {
+        await MultitabConfigApi.createCheckbox(values);
+        message.success("Checkbox added successfully");
+      }
       setIsModalOpen(false);
       fetchCheckboxes();
     } catch (error) {
@@ -45,6 +58,13 @@ const MultitabCheckbox: React.FC = () => {
   const columns = [
     { title: "ID", dataIndex: "id", key: "id" },
     { title: "Checkbox Name", dataIndex: "label_name", key: "label_name" },
+    {
+      title: "Action",
+      key: "action",
+      render: (_: any, record: any) => (
+        <Button type="link" icon={<EditOutlined />} onClick={() => handleEdit(record)}>Edit</Button>
+      )
+    },
   ];
 
   return (
@@ -57,7 +77,7 @@ const MultitabCheckbox: React.FC = () => {
       </Card>
 
       <Modal
-        title="Add Multitab Checkbox"
+        title={editingId ? "Edit Multitab Checkbox" : "Add Multitab Checkbox"}
         open={isModalOpen}
         onOk={handleModalSubmit}
         onCancel={() => setIsModalOpen(false)}

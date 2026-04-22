@@ -79,11 +79,15 @@ const DynamicProductFields: React.FC<Props> = ({ mapping_id, fields, dynamicFiel
       placeholder: field.display_name,
       style: { width: "100%" },
       required: field.is_required,
-      value: (val === null || val === undefined) ? undefined : val,
+      value: (val === null || val === undefined) ? "" : val,
       onChange: (e: any) => {
         const newVal = (field.field_type === "text" || field.field_type === "number") ? e.target.value : e;
         handleFieldChange(field.id, newVal);
-      }
+      },
+      autoFocus: field.field_name === "barcode",
+      "data-mapping-id": mapping_id,
+      "data-field-id": field.id,
+      className: field.field_name === "barcode" ? "barcode-input" : ""
     };
 
     switch (field.field_type) {

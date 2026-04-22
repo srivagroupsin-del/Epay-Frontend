@@ -34,6 +34,7 @@ const AddProduct = () => {
     const [selectedMappings, setSelectedMappings] = useState<SelectedMapping[]>([]);
     const [dynamicFieldValues, setDynamicFieldValues] = useState<any[]>([]);
     const [fieldsByCategory, setFieldsByCategory] = useState<any>({});
+    const [isScanning, setIsScanning] = useState(false);
 
     // UI state for the current selection being made
     const [selection, setSelection] = useState({
@@ -121,6 +122,62 @@ const AddProduct = () => {
         };
         fetchFields();
     }, [selectedMappings]);
+    
+    // 🟢 Barcode Scanner Support (Global Listener)
+    useEffect(() => {
+        let scannerBuffer = "";
+        let lastKeyTime = Date.now();
+
+        const handler = (e: KeyboardEvent) => {
+            const now = Date.now();
+            if (now - lastKeyTime > 100) scannerBuffer = "";
+            lastKeyTime = now;
+
+            if (e.key === "Enter") {
+                if (scannerBuffer.length > 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    setIsScanning(true);
+                    const scannedValue = scannerBuffer;
+                    scannerBuffer = "";
+
+                    const activeEl = document.activeElement as HTMLElement;
+                    const mappingId = activeEl?.getAttribute("data-mapping-id");
+                    const fieldId = activeEl?.getAttribute("data-field-id");
+
+                    if (mappingId && fieldId) {
+                        setDynamicFieldValues(prev => {
+                            const updated = [...prev];
+                            const mId = Number(mappingId);
+                            const fId = Number(fieldId);
+                            
+                            const idx = updated.findIndex(v => v.mapping_id === mId && v.field_id === fId);
+                            if (idx > -1) {
+                                updated[idx] = { ...updated[idx], value: scannedValue };
+                            } else {
+                                updated.push({
+                                    mapping_id: mId,
+                                    field_id: fId,
+                                    value: scannedValue
+                                });
+                            }
+                            return updated;
+                        });
+                    } else if (activeEl?.getAttribute("name") === "model") {
+                        setForm(prev => ({ ...prev, model: scannedValue }));
+                    }
+                    
+                    setTimeout(() => setIsScanning(false), 300);
+                }
+            } else if (e.key.length === 1) {
+                scannerBuffer += e.key;
+            }
+        };
+
+        window.addEventListener("keydown", handler, true);
+        return () => window.removeEventListener("keydown", handler, true);
+    }, [selectedMappings, fieldsByCategory]);
 
     /* ---------------- CASCADING DROPDOWN LOGIC ---------------- */
 
@@ -331,6 +388,8 @@ const AddProduct = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (isScanning) return; // Block scanner-triggered submit
+        
         if (!form.productName) {
             alert("Product Name is required");
             return;
