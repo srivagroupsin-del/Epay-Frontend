@@ -385,6 +385,7 @@ const ViewProduct = () => {
                             <div className="qr-info">
                                 <h4>{showQR.product_name}</h4>
                                 <p>Model: {showQR.model || "—"}</p>
+                                <p>Brand: {showQR.brands || "—"}</p>
                                 <div className="qr-price-tag">₹{showQR.mrp || 0}</div>
                             </div>
                         </div>

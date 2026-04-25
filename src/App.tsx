@@ -137,8 +137,16 @@ import ProductsDemo from "./pages/Products";
 
 import { useEffect } from "react";
 import { MappingProvider } from "./context/MappingContext";
+import { loadApiKey } from "./base_api/base_api";
 
 function App() {
+  useEffect(() => {
+    const init = async () => {
+      await loadApiKey(); // 🔥 ALWAYS LOAD API KEY FIRST
+    };
+
+    init();
+  }, []);
   /* =========================
      AUTO-LOGIN TRAIL (DEBUG)
      Allows adding ?token=... to the URL to force session
@@ -159,171 +167,171 @@ function App() {
 
   return (
     <Routes>
-        {/* AUTHENTICATION */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+      {/* AUTHENTICATION */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
 
-        {/* LAYOUT - PROTECTED ROUTES */}
-        <Route element={<ProtectedRoute />}>
-          <Route element={<Layout />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/sector-titles" element={<SectorTitleList />} />
-            <Route path="/sector-titles/add" element={<AddSectorTitle />} />
-            <Route path="/sector-title-field/add" element={<AddSectorTitlefield />} />
-            <Route path="/sector/add" element={<AddSector />} />
-            <Route path="/sector" element={<ViewSectors />} />
-            <Route path="/sector-mapping" element={<AddSectorMapping />} />
-            <Route path="/sector-title-field" element={<SectorTitlefield />} />
-            <Route path="/sector-title/edit/:id" element={<EditSectorTitle />} />
-            <Route path="/edit-sector/:id" element={<EditSector />} />
+      {/* LAYOUT - PROTECTED ROUTES */}
+      <Route element={<ProtectedRoute />}>
+        <Route element={<Layout />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/sector-titles" element={<SectorTitleList />} />
+          <Route path="/sector-titles/add" element={<AddSectorTitle />} />
+          <Route path="/sector-title-field/add" element={<AddSectorTitlefield />} />
+          <Route path="/sector/add" element={<AddSector />} />
+          <Route path="/sector" element={<ViewSectors />} />
+          <Route path="/sector-mapping" element={<AddSectorMapping />} />
+          <Route path="/sector-title-field" element={<SectorTitlefield />} />
+          <Route path="/sector-title/edit/:id" element={<EditSectorTitle />} />
+          <Route path="/edit-sector/:id" element={<EditSector />} />
 
-            {/* -------------------subsector------------- */}
-            <Route path="/subsector/add" element={<AddSubSector />} />
-            <Route path="/subsector" element={<ViewSubSectors />} />
-            <Route path="/subsector-mapping" element={<AddSubSectorMapping />} />
-            <Route path="/sub-sectors/edit/:id" element={<EditSubSector />} />
+          {/* -------------------subsector------------- */}
+          <Route path="/subsector/add" element={<AddSubSector />} />
+          <Route path="/subsector" element={<ViewSubSectors />} />
+          <Route path="/subsector-mapping" element={<AddSubSectorMapping />} />
+          <Route path="/sub-sectors/edit/:id" element={<EditSubSector />} />
 
-            {/* ----------------------category------- */}
-            <Route path="/category/add" element={<AddPrimaryCategory />} />
-            <Route path="/categories" element={<ViewCategoryList />} />
-            <Route path="/manage-category" element={<ManageCategory />} />
-            <Route path="/unselect-categories" element={<ViewUnselectCategoryList />} />
-            <Route path="/categories/edit/:id?" element={<EditCategory />} />
-            <Route path="/category-field" element={<CategoryField />} />
+          {/* ----------------------category------- */}
+          <Route path="/category/add" element={<AddPrimaryCategory />} />
+          <Route path="/categories" element={<ViewCategoryList />} />
+          <Route path="/manage-category" element={<ManageCategory />} />
+          <Route path="/unselect-categories" element={<ViewUnselectCategoryList />} />
+          <Route path="/categories/edit/:id?" element={<EditCategory />} />
+          <Route path="/category-field" element={<CategoryField />} />
 
-            {/* ----------------------category group------- */}
-            <Route path="/category-groups" element={<CategoryGroupView />} />
-            <Route path="/category-groups/add" element={<AddCategoryGroup />} />
-            <Route path="/category-groups/edit/:id" element={<EditCategoryGroup />} />
-            <Route path="/category-groups/create-title" element={<CreateCategoryTitle />} />
-            <Route path="/category-groups/mapping" element={<CategoryMapping />} />
-
-
-
-
-            <Route
-              path="/primary-secondary-category-mapping"
-              element={<PrimarySecondaryCategoryMapping />}
-            />
-            <Route path="/sector-gst-config" element={<SectorGSTConfig />} />
-            <Route path="/category/tax" element={<CategoryTax />} />
-            <Route path="/brands/add" element={<AddBrand />} />
-            <Route path="/brands" element={<ViewBrandList />} />
-            <Route path="/brands/edit/:id" element={<EditBrand />} />
-
-            {/* CATEGORY BRAND MAPPING & PRODUCTS REQUIRING CONTEXT */}
-            <Route element={<MappingProvider><Outlet /></MappingProvider>}>
-                <Route path="/add-category-brand" element={<AddCategoryBrand />} />
-                <Route path="/manage-category-brand" element={<ManageCategoryBrand />} />
-                <Route path="/product/add" element={<AddProduct />} />
-                <Route path="/products/edit/:id" element={<EditProduct />} />
-                <Route path="/demo/products" element={<ProductsDemo />} />
-            </Route>
-
-            {/* PRODUCT ROUTES */}
-            <Route path="/products" element={<ViewProduct />} />
-            <Route path="/product/update-mrp" element={<UpdateMRP />} />
-            <Route path="/product/tax" element={<ProductTax />} />
-            <Route path="/product-mapping" element={<ProductMapping />} />
-
-            {/* WEBSITE ROUTES */}
-            <Route path="/website/add" element={<AddWebsite />} />
-            <Route path="/websites" element={<ViewWebsiteList />} />
-            <Route path="/website/edit/:id" element={<EditWebsite />} />
-
-            {/* VARIANT FIELD ROUTES */}
-            <Route path="/variant/add-colour" element={<AddColour />} />
-            <Route path="/variant/view-colour" element={<ViewColourList />} />
-            <Route path="/variant/edit-colour/:id" element={<EditColour />} />
-            <Route path="/variant/view-variant" element={<ViewVariantList />} />
-            <Route path="/variant/add-variant" element={<AddVariant />} />
-            <Route path="/variant/add-field" element={<AddField />} />
-            <Route path="/variant/view-field" element={<ViewFieldList />} />
-            <Route path="/variant/add-unit-type" element={<AddUnitType />} />
-            <Route path="/variant/view-unit-type" element={<ViewUnitTypeList />} />
-            <Route path="/variant/add-tax" element={<AddTax />} />
-            <Route path="/variant/view-tax" element={<ViewTaxList />} />
-            <Route path="/variant/edit-tax/:id" element={<EditTax />} />
-            <Route path="/variant/discount-management" element={<DiscountManagement />} />
-            <Route path="/variant/offer-management" element={<OfferManagement />} />
-
-            {/* SECTOR TITLE MULTITAB ROUTES */}
-            <Route path="/multitab/add-menu" element={<AddMenu />} />
-            <Route path="/multitab/add-tabheading" element={<AddTabheadingMaster />} />
-            <Route path="/multitab/add-checkbox" element={<AddCheckboxMaster />} />
-            <Route path="/multitab/add-mapping" element={<AddMappingCheckbox />} />
-            <Route path="/multitab/add-preview" element={<AddPreviewTabs />} />
-
-            {/* SUBSECTOR MULTITAB ROUTES */}
-            <Route path="/sub-multitab/add-menu" element={<AddSubMenu />} />
-            <Route path="/sub-multitab/add-tabheading" element={<AddSubTabheadingMaster />} />
-            <Route path="/sub-multitab/add-checkbox" element={<AddSubCheckboxMaster />} />
-            <Route path="/sub-multitab/add-mapping" element={<AddSubMappingCheckbox />} />
-            <Route path="/sub-multitab/add-preview" element={<AddSubPreviewTabs />} />
-
-            {/* SECTOR MULTI TAB ROUTES */}
-            <Route path="/sector-multitab/add-menu" element={<AddSectorMultiTabMenu />} />
-            <Route path="/sector-multitab/add-tabheading" element={<AddSectorTabHeadingMaster />} />
-            <Route path="/sector-multitab/add-checkbox" element={<AddSectorCheckboxMaster />} />
-            <Route path="/sector-multitab/add-mapping" element={<AddSectorMappingCheckbox />} />
-            <Route path="/sector-multitab/add-preview" element={<AddSectorPreviewTabs />} />
-
-            {/* CATEGORY MULTI TAB ROUTES */}
-            <Route path="/category-multitab/add-menu" element={<AddCategoryMenu />} />
-            <Route path="/category-multitab/add-tabheading" element={<AddCategoryTabHeadingMaster />} />
-            <Route path="/category-multitab/add-checkbox" element={<AddCategoryCheckboxMaster />} />
-            <Route path="/category-multitab/add-mapping" element={<AddCategoryMappingCheckbox />} />
-            <Route path="/category-multitab/add-preview" element={<AddCategoryPreviewTabs />} />
-
-            {/* BRAND MULTI TAB ROUTES */}
-            <Route path="/brand-multitab/add-menu" element={<AddBrandMultitabMenu />} />
-            <Route path="/brand-multitab/add-tabheading" element={<AddBrandTabHeadingMaster />} />
-            <Route path="/brand-multitab/add-checkbox" element={<AddBrandCheckboxMaster />} />
-            <Route path="/brand-multitab/add-mapping" element={<AddBrandMappingCheckbox />} />
-            <Route path="/brand-multitab/add-preview" element={<AddBrandPreviewTabs />} />
-
-            {/* CREATE TAB MULTI TAB ROUTES */}
-            <Route path="/create-tab-multitab/add-menu" element={<CreateTabAddMenu />} />
-            <Route path="/create-tab-multitab/add-tabheading" element={<CreateTabAddTabHeading />} />
-            <Route path="/create-tab-multitab/add-checkbox" element={<CreateTabAddCheckbox />} />
-            <Route path="/create-tab-multitab/add-mapping" element={<CreateTabAddMapping />} />
-            <Route path="/create-tab-multitab/add-preview" element={<CreateTabAddPreview />} />
-
-            {/* SETTINGS */}
-
-            <Route path="/settings/menu-title" element={<MenuTitlePage />} />
-            <Route path="/settings/menu" element={<ViewMenuList />} />
-            <Route path="/settings/menu/add" element={<Menu />} />
-            <Route path="/settings/menu/edit/:id" element={<Menu />} />
-            <Route path="/settings/menu-pages" element={<ViewMenuPages />} />
-            <Route path="/settings/menu-pages/add" element={<AddMenuPage />} />
-            <Route path="/settings/menu-pages/edit/:id" element={<AddMenuPage />} />
-            <Route path="/settings/menu-mapping" element={<MenuMappingPage />} />
-            <Route path="/settings/menu-mapping/add" element={<AddMenuMapping />} />
-            <Route path="/settings/menu-mapping/edit/:id" element={<EditMenuMapping />} />
-            {/* <Route path="/settings/sector-settings" element={<SectorSettingsPage />} /> */}
-            <Route path="/settings/page-creation" element={<PageCreation />} />
-            <Route path="/settings/dynamic-form-creator" element={<DynamicFormCreator />} />
-
-            {/* MULTITAB CONFIGURATION ROUTES */}
-            <Route path="/settings/multitab-menu" element={<MultitabMenu />} />
-            <Route path="/settings/multitab-heading" element={<MultitabHeading />} />
-            <Route path="/settings/multitab-checkbox" element={<MultitabCheckbox />} />
-            <Route path="/settings/multitab-fields" element={<MultitabFields />} />
-            <Route path="/settings/multitab-config" element={<MultitabConfig />} />
-
-            {/* ZUSTAND DEMO ROUTES */}
-            <Route path="/demo/select-business" element={<SelectBusiness />} />
-            <Route path="/demo/dashboard" element={<DashboardDemo />} />
+          {/* ----------------------category group------- */}
+          <Route path="/category-groups" element={<CategoryGroupView />} />
+          <Route path="/category-groups/add" element={<AddCategoryGroup />} />
+          <Route path="/category-groups/edit/:id" element={<EditCategoryGroup />} />
+          <Route path="/category-groups/create-title" element={<CreateCategoryTitle />} />
+          <Route path="/category-groups/mapping" element={<CategoryMapping />} />
 
 
 
+
+          <Route
+            path="/primary-secondary-category-mapping"
+            element={<PrimarySecondaryCategoryMapping />}
+          />
+          <Route path="/sector-gst-config" element={<SectorGSTConfig />} />
+          <Route path="/category/tax" element={<CategoryTax />} />
+          <Route path="/brands/add" element={<AddBrand />} />
+          <Route path="/brands" element={<ViewBrandList />} />
+          <Route path="/brands/edit/:id" element={<EditBrand />} />
+
+          {/* CATEGORY BRAND MAPPING & PRODUCTS REQUIRING CONTEXT */}
+          <Route element={<MappingProvider><Outlet /></MappingProvider>}>
+            <Route path="/add-category-brand" element={<AddCategoryBrand />} />
+            <Route path="/manage-category-brand" element={<ManageCategoryBrand />} />
+            <Route path="/product/add" element={<AddProduct />} />
+            <Route path="/products/edit/:id" element={<EditProduct />} />
+            <Route path="/demo/products" element={<ProductsDemo />} />
           </Route>
-        </Route>
 
-        {/* 404 */}
-        <Route path="*" element={<h2>Page Not Found</h2>} />
-      </Routes>
+          {/* PRODUCT ROUTES */}
+          <Route path="/products" element={<ViewProduct />} />
+          <Route path="/product/update-mrp" element={<UpdateMRP />} />
+          <Route path="/product/tax" element={<ProductTax />} />
+          <Route path="/product-mapping" element={<ProductMapping />} />
+
+          {/* WEBSITE ROUTES */}
+          <Route path="/website/add" element={<AddWebsite />} />
+          <Route path="/websites" element={<ViewWebsiteList />} />
+          <Route path="/website/edit/:id" element={<EditWebsite />} />
+
+          {/* VARIANT FIELD ROUTES */}
+          <Route path="/variant/add-colour" element={<AddColour />} />
+          <Route path="/variant/view-colour" element={<ViewColourList />} />
+          <Route path="/variant/edit-colour/:id" element={<EditColour />} />
+          <Route path="/variant/view-variant" element={<ViewVariantList />} />
+          <Route path="/variant/add-variant" element={<AddVariant />} />
+          <Route path="/variant/add-field" element={<AddField />} />
+          <Route path="/variant/view-field" element={<ViewFieldList />} />
+          <Route path="/variant/add-unit-type" element={<AddUnitType />} />
+          <Route path="/variant/view-unit-type" element={<ViewUnitTypeList />} />
+          <Route path="/variant/add-tax" element={<AddTax />} />
+          <Route path="/variant/view-tax" element={<ViewTaxList />} />
+          <Route path="/variant/edit-tax/:id" element={<EditTax />} />
+          <Route path="/variant/discount-management" element={<DiscountManagement />} />
+          <Route path="/variant/offer-management" element={<OfferManagement />} />
+
+          {/* SECTOR TITLE MULTITAB ROUTES */}
+          <Route path="/multitab/add-menu" element={<AddMenu />} />
+          <Route path="/multitab/add-tabheading" element={<AddTabheadingMaster />} />
+          <Route path="/multitab/add-checkbox" element={<AddCheckboxMaster />} />
+          <Route path="/multitab/add-mapping" element={<AddMappingCheckbox />} />
+          <Route path="/multitab/add-preview" element={<AddPreviewTabs />} />
+
+          {/* SUBSECTOR MULTITAB ROUTES */}
+          <Route path="/sub-multitab/add-menu" element={<AddSubMenu />} />
+          <Route path="/sub-multitab/add-tabheading" element={<AddSubTabheadingMaster />} />
+          <Route path="/sub-multitab/add-checkbox" element={<AddSubCheckboxMaster />} />
+          <Route path="/sub-multitab/add-mapping" element={<AddSubMappingCheckbox />} />
+          <Route path="/sub-multitab/add-preview" element={<AddSubPreviewTabs />} />
+
+          {/* SECTOR MULTI TAB ROUTES */}
+          <Route path="/sector-multitab/add-menu" element={<AddSectorMultiTabMenu />} />
+          <Route path="/sector-multitab/add-tabheading" element={<AddSectorTabHeadingMaster />} />
+          <Route path="/sector-multitab/add-checkbox" element={<AddSectorCheckboxMaster />} />
+          <Route path="/sector-multitab/add-mapping" element={<AddSectorMappingCheckbox />} />
+          <Route path="/sector-multitab/add-preview" element={<AddSectorPreviewTabs />} />
+
+          {/* CATEGORY MULTI TAB ROUTES */}
+          <Route path="/category-multitab/add-menu" element={<AddCategoryMenu />} />
+          <Route path="/category-multitab/add-tabheading" element={<AddCategoryTabHeadingMaster />} />
+          <Route path="/category-multitab/add-checkbox" element={<AddCategoryCheckboxMaster />} />
+          <Route path="/category-multitab/add-mapping" element={<AddCategoryMappingCheckbox />} />
+          <Route path="/category-multitab/add-preview" element={<AddCategoryPreviewTabs />} />
+
+          {/* BRAND MULTI TAB ROUTES */}
+          <Route path="/brand-multitab/add-menu" element={<AddBrandMultitabMenu />} />
+          <Route path="/brand-multitab/add-tabheading" element={<AddBrandTabHeadingMaster />} />
+          <Route path="/brand-multitab/add-checkbox" element={<AddBrandCheckboxMaster />} />
+          <Route path="/brand-multitab/add-mapping" element={<AddBrandMappingCheckbox />} />
+          <Route path="/brand-multitab/add-preview" element={<AddBrandPreviewTabs />} />
+
+          {/* CREATE TAB MULTI TAB ROUTES */}
+          <Route path="/create-tab-multitab/add-menu" element={<CreateTabAddMenu />} />
+          <Route path="/create-tab-multitab/add-tabheading" element={<CreateTabAddTabHeading />} />
+          <Route path="/create-tab-multitab/add-checkbox" element={<CreateTabAddCheckbox />} />
+          <Route path="/create-tab-multitab/add-mapping" element={<CreateTabAddMapping />} />
+          <Route path="/create-tab-multitab/add-preview" element={<CreateTabAddPreview />} />
+
+          {/* SETTINGS */}
+
+          <Route path="/settings/menu-title" element={<MenuTitlePage />} />
+          <Route path="/settings/menu" element={<ViewMenuList />} />
+          <Route path="/settings/menu/add" element={<Menu />} />
+          <Route path="/settings/menu/edit/:id" element={<Menu />} />
+          <Route path="/settings/menu-pages" element={<ViewMenuPages />} />
+          <Route path="/settings/menu-pages/add" element={<AddMenuPage />} />
+          <Route path="/settings/menu-pages/edit/:id" element={<AddMenuPage />} />
+          <Route path="/settings/menu-mapping" element={<MenuMappingPage />} />
+          <Route path="/settings/menu-mapping/add" element={<AddMenuMapping />} />
+          <Route path="/settings/menu-mapping/edit/:id" element={<EditMenuMapping />} />
+          {/* <Route path="/settings/sector-settings" element={<SectorSettingsPage />} /> */}
+          <Route path="/settings/page-creation" element={<PageCreation />} />
+          <Route path="/settings/dynamic-form-creator" element={<DynamicFormCreator />} />
+
+          {/* MULTITAB CONFIGURATION ROUTES */}
+          <Route path="/settings/multitab-menu" element={<MultitabMenu />} />
+          <Route path="/settings/multitab-heading" element={<MultitabHeading />} />
+          <Route path="/settings/multitab-checkbox" element={<MultitabCheckbox />} />
+          <Route path="/settings/multitab-fields" element={<MultitabFields />} />
+          <Route path="/settings/multitab-config" element={<MultitabConfig />} />
+
+          {/* ZUSTAND DEMO ROUTES */}
+          <Route path="/demo/select-business" element={<SelectBusiness />} />
+          <Route path="/demo/dashboard" element={<DashboardDemo />} />
+
+
+
+        </Route>
+      </Route>
+
+      {/* 404 */}
+      <Route path="*" element={<h2>Page Not Found</h2>} />
+    </Routes>
   );
 }
 

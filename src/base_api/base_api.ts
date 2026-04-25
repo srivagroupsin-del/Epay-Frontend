@@ -7,6 +7,28 @@ import { clearSession } from "../utils/sessionManager";
  * - Supports JSON & FormData
  * - Centralized 401 handling
  */
+
+let API_KEY = "";
+
+
+export const loadApiKey = async () => {
+  try {
+    const res = await fetch(
+      `${BASE_URL}admin/api-key/public/api-key?service_name=Epay_Recharge&platform_type=WEB`
+    );
+
+    const data = await res.json();
+
+    if (data.success) {
+      API_KEY = data.api_key;
+    } else {
+      console.error("❌ Failed to load API key");
+    }
+  } catch (err) {
+    console.error("❌ API KEY ERROR:", err);
+  }
+};
+
 export const http = async (
   url: string,
   options: RequestInit = {}
@@ -27,7 +49,15 @@ export const http = async (
   const authHeader = token
     ? (token.startsWith("Bearer ") ? token : `Bearer ${token}`)
     : undefined;
+  if (!API_KEY) {
+    console.warn("⏳ Waiting for API key...");
 
+    await loadApiKey();
+
+    if (!API_KEY) {
+      throw new Error("API key not loaded");
+    }
+  }
   /* =========================
      HEADERS (SAFE BUILD)
   ========================= */
@@ -35,7 +65,7 @@ export const http = async (
 
   // Standard Required Headers
   headers.set("Accept", "application/json");
-  headers.set("x-api-key", "WEB-Y5YQ8C8VP-MO6Z1XKN");
+  headers.set("x-api-key", API_KEY);
   headers.set("x-service-name", "Epay_Recharge");
   headers.set("x-platform", "WEB");
 
