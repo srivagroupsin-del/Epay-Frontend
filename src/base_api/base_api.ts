@@ -13,8 +13,22 @@ let API_KEY = "";
 
 export const loadApiKey = async () => {
   try {
+    let token = localStorage.getItem("token");
+    if (!token || token === "undefined" || token === "null") {
+      token = null;
+    }
+    const authHeader = token
+      ? (token.startsWith("Bearer ") ? token : `Bearer ${token}`)
+      : undefined;
+
+    const headers: HeadersInit = {};
+    if (authHeader) {
+      headers["Authorization"] = authHeader;
+    }
+
     const res = await fetch(
-      `${BASE_URL}admin/api-key/public/api-key?service_name=Epay_Recharge&platform_type=WEB`
+      `${BASE_URL}admin/api-key/public/api-key?service_name=Epay_Recharge&platform_type=WEB`,
+      { headers }
     );
 
     const data = await res.json();

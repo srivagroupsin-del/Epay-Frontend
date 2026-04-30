@@ -3,6 +3,10 @@ import { http } from "../base_api/base_api";
 export const loginUser = async (data: any) => {
     return await http("/auth/login", {
         method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "x-platform": "WEB", // 🔥 IMPORTANT
+        },
         body: JSON.stringify(data),
     });
 };
