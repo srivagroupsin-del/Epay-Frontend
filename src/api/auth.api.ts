@@ -5,7 +5,6 @@ export const loginUser = async (data: any) => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "x-platform": "WEB", // 🔥 IMPORTANT
         },
         body: JSON.stringify(data),
     });

@@ -4,5 +4,5 @@
 
 
 // Local server (not implemented yet)
-export const BASE_URL = "http://192.168.0.112:5000/api/";
+export const BASE_URL = "http://192.168.1.19:5000/api/";
 export const IMAGE_BASE_URL = "http://192.168.0.112:5000/uploads";

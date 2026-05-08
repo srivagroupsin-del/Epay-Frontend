@@ -127,30 +127,11 @@ import SelectBusiness from "./pages/SelectBusiness";
 import DashboardDemo from "./pages/Dashboard";
 import ProductsDemo from "./pages/Products";
 
-
-
-
-
-
-
-
-
 import { useEffect } from "react";
 import { MappingProvider } from "./context/MappingContext";
-import { loadApiKey } from "./base_api/base_api";
 
 function App() {
-  useEffect(() => {
-    const init = async () => {
-      await loadApiKey(); // 🔥 ALWAYS LOAD API KEY FIRST
-    };
 
-    init();
-  }, []);
-  /* =========================
-     AUTO-LOGIN TRAIL (DEBUG)
-     Allows adding ?token=... to the URL to force session
-  ========================= */
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");

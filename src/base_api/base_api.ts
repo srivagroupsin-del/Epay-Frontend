@@ -8,40 +8,7 @@ import { clearSession } from "../utils/sessionManager";
  * - Centralized 401 handling
  */
 
-let API_KEY = "";
 
-
-export const loadApiKey = async () => {
-  try {
-    let token = localStorage.getItem("token");
-    if (!token || token === "undefined" || token === "null") {
-      token = null;
-    }
-    const authHeader = token
-      ? (token.startsWith("Bearer ") ? token : `Bearer ${token}`)
-      : undefined;
-
-    const headers: HeadersInit = {};
-    if (authHeader) {
-      headers["Authorization"] = authHeader;
-    }
-
-    const res = await fetch(
-      `${BASE_URL}admin/api-key/public/api-key?service_name=Epay_Recharge&platform_type=WEB`,
-      { headers }
-    );
-
-    const data = await res.json();
-
-    if (data.success) {
-      API_KEY = data.api_key;
-    } else {
-      console.error("❌ Failed to load API key");
-    }
-  } catch (err) {
-    console.error("❌ API KEY ERROR:", err);
-  }
-};
 
 export const http = async (
   url: string,
@@ -63,15 +30,7 @@ export const http = async (
   const authHeader = token
     ? (token.startsWith("Bearer ") ? token : `Bearer ${token}`)
     : undefined;
-  if (!API_KEY) {
-    console.warn("⏳ Waiting for API key...");
 
-    await loadApiKey();
-
-    if (!API_KEY) {
-      throw new Error("API key not loaded");
-    }
-  }
   /* =========================
      HEADERS (SAFE BUILD)
   ========================= */
@@ -79,9 +38,6 @@ export const http = async (
 
   // Standard Required Headers
   headers.set("Accept", "application/json");
-  headers.set("x-api-key", API_KEY);
-  headers.set("x-service-name", "Epay_Recharge");
-  headers.set("x-platform", "WEB");
 
   // Set JSON content type ONLY if body is not FormData
   if (!isFormData && options.body) {
@@ -97,7 +53,7 @@ export const http = async (
 
   // Merge custom headers safely (do NOT override Authorization or standard headers)
   if (options.headers) {
-    const standardHeaders = ["x-api-key", "x-service-name", "x-platform", "authorization"];
+    const standardHeaders = ["authorization"];
     Object.entries(options.headers as Record<string, string>).forEach(
       ([key, value]) => {
         if (!standardHeaders.includes(key.toLowerCase())) {
