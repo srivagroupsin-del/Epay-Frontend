@@ -15,6 +15,7 @@ import { useBusinessStore } from "../../../store/useBusinessStore";
 import { getSectorTitles, type SectorTitle } from "../../../api/sectorTitle.api";
 import { getSectors, type Sector } from "../../../api/sectors.api";
 import "./viewSubSectors.css";
+import { MultitabContentLoader } from "../../../components/multitab/MultitabContentLoader";
 
 
 
@@ -227,255 +228,257 @@ const ViewSubSectors = () => {
     <div className="page-container">
       <GlobalStoreHeader />
 
-      {/* HEADER */}
-      <div className="page-header">
-        <div>
-          <h2>View SubSector List</h2>
-          <p className="subtitle">Manage all subsectors</p>
-        </div>
-        <a
-          href="/subsector/add"
-          className="btn primary"
-          style={{ textDecoration: "none" }}
-        >
-          Add New SubSector
-        </a>
-      </div>
-
-      {/* CARD */}
-      <div className="card" style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-        {/* FILTERS */}
-        <div className="filters-row">
-          <div className="premium-filter-group" style={{ width: '300px' }}>
-            <label className="floating-label">Sector Title</label>
-            <select
-              className="premium-input"
-              value={sectorTitleFilter}
-              onChange={(e) => {
-                const title = e.target.value;
-                setSectorTitleFilter(title);
-                setSectorFilter("All");
-                useBusinessStore.getState().setBusiness(title);
-                setCurrentPage(1);
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              {sectorTitlesOptions.map((title, idx) => (
-                <option key={`title-${idx}`} value={title}>
-                  {title === "All" ? "Select Sector Title" : title}
-                </option>
-              ))}
-            </select>
+      <MultitabContentLoader menuTitle="SubSector">
+        {/* HEADER */}
+        <div className="page-header">
+          <div>
+            <h2>View SubSector List</h2>
+            <p className="subtitle">Manage all subsectors</p>
           </div>
-
-          <div className="premium-filter-group" style={{ width: '300px' }}>
-            <label className="floating-label">Sector</label>
-            <select
-              className="premium-input"
-              value={sectorFilter}
-              onChange={(e) => {
-                const sec = e.target.value;
-                setSectorFilter(sec);
-                useBusinessStore.getState().setBusiness(sec);
-                setCurrentPage(1);
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              {sectorsOptions.map((sec, idx) => (
-                <option key={`sec-${idx}`} value={sec}>
-                  {sec === "All" ? "Select Sector" : sec}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="premium-filter-group" style={{ width: '100px' }}>
-            <label className="floating-label">Show</label>
-            <select
-              className="premium-input"
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              style={{ cursor: 'pointer' }}
-            >
-              {countOptions.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="premium-filter-group" style={{ width: '280px' }}>
-            <label className="floating-label">Search</label>
-            <input
-              className="premium-input"
-              placeholder="Search subsector..."
-              value={search}
-              onChange={e => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
+          <a
+            href="/subsector/add"
+            className="btn primary"
+            style={{ textDecoration: "none" }}
+          >
+            Add New SubSector
+          </a>
         </div>
 
-        {/* TABLE */}
-        {loading ? (
-          <div className="loading" style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>Loading subsectors...</div>
-        ) : (
-          <div className="table-wrapper">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>SECTOR TITLE</th>
-                  <th>SECTOR</th>
-                  <th>SUBSECTOR</th>
-                  <th>PHOTO</th>
-                  <th>STATUS</th>
-                  <th className="text-center">ACTION</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {paginated.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
-                      No subsectors found
-                    </td>
-                  </tr>
-                ) : (
-                  paginated.map((item, index) => {
-                    const backendRow = rows.find(r => r.id === item.id);
-
-                    return (
-                      <tr key={item.id}>
-                        <td>{(currentPage - 1) * limit + index + 1}</td>
-                        <td style={{ fontWeight: '500' }}>{item.sectorTitle}</td>
-                        <td>{item.sector}</td>
-                        <td style={{ fontWeight: '600', color: '#1f2937' }}>{item.subSector}</td>
-                        <td>
-                          {item.image ? (
-                            <img
-                              src={`${IMAGE_BASE_URL}/${item.image}`}
-                              alt={item.subSector}
-                              style={{
-                                width: 50,
-                                height: 50,
-                                objectFit: "contain",
-                                borderRadius: 6,
-                              }}
-                            />
-                          ) : (
-                            "—"
-                          )}
-                        </td>
-                        <td>
-                          <span className={`badge ${item.status.toLowerCase()}`}>
-                            {item.status}
-                          </span>
-                        </td>
-                        <td className="text-center">
-                          <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
-                            <Link
-                              to={`/sub-sectors/edit/${item.id}?page=${currentPage}`}
-                              state={backendRow}
-                              className="action-btn edit"
-                              title="Edit"
-                            >
-                              <SquarePen size={24} />
-                            </Link>
-
-                            <button
-                              className="action-btn delete"
-                              title="Delete"
-                              onClick={() => handleDelete(item.id)}
-                            >
-                              <Trash2 size={24} />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
-
-        {/* PAGINATION */}
-        {!loading && filtered.length > 0 && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '0 10px 10px', fontSize: '14px', color: '#6b7280' }}>
-            <div>
-              Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, filtered.length)} of {filtered.length} entries
-            </div>
-
-            <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
-              <div className="page-jump-box">
-                <span>Go to Page:</span>
-                <input
-                  type="text"
-                  className="jump-input"
-                  value={jumpInput}
-                  onChange={(e) => handleJumpChange(e.target.value)}
-                />
-              </div>
-
-              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                <button
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage === 1}
-                  className="pagination-btn"
-                  title="First Page"
-                >
-                  ≪
-                </button>
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="pagination-btn"
-                  title="Previous Page"
-                >
-                  ‹
-                </button>
-
-                {getPageNumbers().map((num, i) => (
-                  num === "..." ? (
-                    <span key={`ell-${i}`} style={{ color: '#6b7280', fontWeight: '600' }}>...</span>
-                  ) : (
-                    <button
-                      key={num}
-                      onClick={() => setCurrentPage(Number(num))}
-                      className={`pagination-btn ${currentPage === num ? 'active' : ''}`}
-                    >
-                      {num}
-                    </button>
-                  )
+        {/* CARD */}
+        <div className="card" style={{ background: '#fff', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
+          {/* FILTERS */}
+          <div className="filters-row">
+            <div className="premium-filter-group" style={{ width: '300px' }}>
+              <label className="floating-label">Sector Title</label>
+              <select
+                className="premium-input"
+                value={sectorTitleFilter}
+                onChange={(e) => {
+                  const title = e.target.value;
+                  setSectorTitleFilter(title);
+                  setSectorFilter("All");
+                  useBusinessStore.getState().setBusiness(title);
+                  setCurrentPage(1);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                {sectorTitlesOptions.map((title, idx) => (
+                  <option key={`title-${idx}`} value={title}>
+                    {title === "All" ? "Select Sector Title" : title}
+                  </option>
                 ))}
+              </select>
+            </div>
 
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="pagination-btn"
-                  title="Next Page"
-                >
-                  ›
-                </button>
-                <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="pagination-btn"
-                  title="Last Page"
-                >
-                  ≫
-                </button>
-              </div>
+            <div className="premium-filter-group" style={{ width: '300px' }}>
+              <label className="floating-label">Sector</label>
+              <select
+                className="premium-input"
+                value={sectorFilter}
+                onChange={(e) => {
+                  const sec = e.target.value;
+                  setSectorFilter(sec);
+                  useBusinessStore.getState().setBusiness(sec);
+                  setCurrentPage(1);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                {sectorsOptions.map((sec, idx) => (
+                  <option key={`sec-${idx}`} value={sec}>
+                    {sec === "All" ? "Select Sector" : sec}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="premium-filter-group" style={{ width: '100px' }}>
+              <label className="floating-label">Show</label>
+              <select
+                className="premium-input"
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                style={{ cursor: 'pointer' }}
+              >
+                {countOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="premium-filter-group" style={{ width: '280px' }}>
+              <label className="floating-label">Search</label>
+              <input
+                className="premium-input"
+                placeholder="Search subsector..."
+                value={search}
+                onChange={e => {
+                  setSearch(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
             </div>
           </div>
-        )}
-      </div>
+
+          {/* TABLE */}
+          {loading ? (
+            <div className="loading" style={{ padding: '40px', textAlign: 'center', color: '#6b7280' }}>Loading subsectors...</div>
+          ) : (
+            <div className="table-wrapper">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>SECTOR TITLE</th>
+                    <th>SECTOR</th>
+                    <th>SUBSECTOR</th>
+                    <th>PHOTO</th>
+                    <th>STATUS</th>
+                    <th className="text-center">ACTION</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {paginated.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} style={{ textAlign: 'center', padding: '40px', color: '#9ca3af' }}>
+                        No subsectors found
+                      </td>
+                    </tr>
+                  ) : (
+                    paginated.map((item, index) => {
+                      const backendRow = rows.find(r => r.id === item.id);
+
+                      return (
+                        <tr key={item.id}>
+                          <td>{(currentPage - 1) * limit + index + 1}</td>
+                          <td style={{ fontWeight: '500' }}>{item.sectorTitle}</td>
+                          <td>{item.sector}</td>
+                          <td style={{ fontWeight: '600', color: '#1f2937' }}>{item.subSector}</td>
+                          <td>
+                            {item.image ? (
+                              <img
+                                src={`${IMAGE_BASE_URL}/${item.image}`}
+                                alt={item.subSector}
+                                style={{
+                                  width: 50,
+                                  height: 50,
+                                  objectFit: "contain",
+                                  borderRadius: 6,
+                                }}
+                              />
+                            ) : (
+                              "—"
+                            )}
+                          </td>
+                          <td>
+                            <span className={`badge ${item.status.toLowerCase()}`}>
+                              {item.status}
+                            </span>
+                          </td>
+                          <td className="text-center">
+                            <div style={{ display: 'flex', justifyContent: 'center', gap: '15px' }}>
+                              <Link
+                                to={`/sub-sectors/edit/${item.id}?page=${currentPage}`}
+                                state={backendRow}
+                                className="action-btn edit"
+                                title="Edit"
+                              >
+                                <SquarePen size={24} />
+                              </Link>
+
+                              <button
+                                className="action-btn delete"
+                                title="Delete"
+                                onClick={() => handleDelete(item.id)}
+                              >
+                                <Trash2 size={24} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* PAGINATION */}
+          {!loading && filtered.length > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '0 10px 10px', fontSize: '14px', color: '#6b7280' }}>
+              <div>
+                Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, filtered.length)} of {filtered.length} entries
+              </div>
+
+              <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
+                <div className="page-jump-box">
+                  <span>Go to Page:</span>
+                  <input
+                    type="text"
+                    className="jump-input"
+                    value={jumpInput}
+                    onChange={(e) => handleJumpChange(e.target.value)}
+                  />
+                </div>
+
+                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="pagination-btn"
+                    title="First Page"
+                  >
+                    ≪
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="pagination-btn"
+                    title="Previous Page"
+                  >
+                    ‹
+                  </button>
+
+                  {getPageNumbers().map((num, i) => (
+                    num === "..." ? (
+                      <span key={`ell-${i}`} style={{ color: '#6b7280', fontWeight: '600' }}>...</span>
+                    ) : (
+                      <button
+                        key={num}
+                        onClick={() => setCurrentPage(Number(num))}
+                        className={`pagination-btn ${currentPage === num ? 'active' : ''}`}
+                      >
+                        {num}
+                      </button>
+                    )
+                  ))}
+
+                  <button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="pagination-btn"
+                    title="Next Page"
+                  >
+                    ›
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="pagination-btn"
+                    title="Last Page"
+                  >
+                    ≫
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </MultitabContentLoader>
     </div>
   );
 };

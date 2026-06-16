@@ -12,6 +12,7 @@ import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import { useDeleteConfirm } from "../../../context/DeleteConfirmContext";
 import { useBusinessStore } from "../../../store/useBusinessStore";
 import GlobalStoreHeader from "../../../components/common/GlobalStoreHeader";
+import { MultitabContentLoader } from "../../../components/multitab/MultitabContentLoader";
 
 
 
@@ -160,229 +161,231 @@ const SectorTitleList = () => {
     <div className="page-container">
       <GlobalStoreHeader />
 
-      {/* HEADER */}
-      <div className="page-header">
-        <div>
-          <h2>View Sector Title List</h2>
-        </div>
+      <MultitabContentLoader menuTitle="Sector Title">
+        {/* HEADER */}
+        <div className="page-header">
+          <div>
+            <h2>View Sector Title List</h2>
+          </div>
 
-        <div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>Show</span>
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              style={{
-                padding: '8px 12px',
-                border: '1px solid #d1d5db',
-                borderRadius: '8px',
-                fontSize: '14px',
-                cursor: 'pointer',
-                background: '#fff',
-                height: '42px'
-              }}
+          <div style={{ display: "flex", gap: "25px", alignItems: "center" }}>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <span style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>Show</span>
+              <select
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                style={{
+                  padding: '8px 12px',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  background: '#fff',
+                  height: '42px'
+                }}
+              >
+                {countOptions.map((option) => (
+                  <option key={option} value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <span style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>Search:</span>
+              <input
+                type="text"
+                placeholder="Search Sector Title..."
+                value={search}
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                  setCurrentPage(1);
+                }}
+                style={{
+                  padding: "8px 12px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "8px",
+                  width: "220px",
+                  height: "42px",
+                  fontSize: "14px"
+                }}
+              />
+            </div>
+
+            <a
+              href="/sector-titles/add"
+              className="btn primary"
+              style={{ textDecoration: "none", display: 'flex', alignItems: 'center', height: '42px', padding: '0 20px', borderRadius: '8px', background: '#323da7', color: '#fff', fontWeight: '600', fontSize: '14px' }}
             >
-              {countOptions.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
+              Add Sector
+            </a>
           </div>
-
-          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-            <span style={{ fontSize: '14px', color: '#6b7280', fontWeight: '600' }}>Search:</span>
-            <input
-              type="text"
-              placeholder="Search Sector Title..."
-              value={search}
-              onChange={(e) => {
-                setSearch(e.target.value);
-                setCurrentPage(1);
-              }}
-              style={{
-                padding: "8px 12px",
-                border: "1px solid #d1d5db",
-                borderRadius: "8px",
-                width: "220px",
-                height: "42px",
-                fontSize: "14px"
-              }}
-            />
-          </div>
-
-          <a
-            href="/sector-titles/add"
-            className="btn primary"
-            style={{ textDecoration: "none", display: 'flex', alignItems: 'center', height: '42px', padding: '0 20px', borderRadius: '8px', background: '#323da7', color: '#fff', fontWeight: '600', fontSize: '14px' }}
-          >
-            Add Sector
-          </a>
         </div>
-      </div>
 
-      {/* TABLE */}
-      <div className="card">
-        {/* Requirement #8: Fixed header and scrollable body via .table-wrapper in CSS */}
-        <div className="table-wrapper">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th style={{ width: '10%', textAlign: 'center' }}>#</th>
-                <th style={{ width: '30%', textAlign: 'left' }}>Sector Title</th>
-                <th style={{ width: '20%', textAlign: 'center' }}>Photo</th>
-                <th style={{ width: '20%', textAlign: 'center' }}>Status</th>
-                <th style={{ width: '20%', textAlign: 'center' }}>Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {paginatedRows.length === 0 ? (
+        {/* TABLE */}
+        <div className="card">
+          {/* Requirement #8: Fixed header and scrollable body via .table-wrapper in CSS */}
+          <div className="table-wrapper">
+            <table className="data-table">
+              <thead>
                 <tr>
-                  <td colSpan={5} style={{ textAlign: "center", padding: '40px', color: '#9ca3af' }}>
-                    No Sector Titles Found
-                  </td>
+                  <th style={{ width: '10%', textAlign: 'center' }}>#</th>
+                  <th style={{ width: '30%', textAlign: 'left' }}>Sector Title</th>
+                  <th style={{ width: '20%', textAlign: 'center' }}>Photo</th>
+                  <th style={{ width: '20%', textAlign: 'center' }}>Status</th>
+                  <th style={{ width: '20%', textAlign: 'center' }}>Action</th>
                 </tr>
-              ) : (
-                paginatedRows.map((item, index) => (
-                  <tr key={item.id}>
-                    <td style={{ textAlign: 'center' }}>{(currentPage - 1) * limit + index + 1}</td>
-                    <td
-                      style={{ cursor: "pointer", color: "#323da7", fontWeight: '600' }}
-                      onClick={() => {
-                        useBusinessStore.getState().setBusiness(item.name);
-                        navigate(`/sector?sectorTitleId=${item.id}`);
-                      }}
-                    >
-                      {item.name}
-                    </td>
+              </thead>
 
-
-                    <td className="photo-cell" style={{ width: '20%', textAlign: 'center' }}>
-                      {item.image ? (
-                        <div className="table-img-wrapper" style={{ margin: '0 auto' }}>
-                          <img
-                            src={`${IMAGE_BASE_URL}/${item.image}`}
-                            alt={item.name}
-                            onError={(e) => {
-                              (e.target as HTMLImageElement).src = "https://via.placeholder.com/60?text=No+Img";
-                            }}
-                          />
-                        </div>
-                      ) : (
-                        <div className="table-img-wrapper empty" style={{ margin: '0 auto' }}>
-                          <Camera size={20} className="camera-placeholder" />
-                        </div>
-                      )}
-                    </td>
-
-                    <td style={{ textAlign: 'center' }}>
-                      <span
-                        className={`status ${item.status === "active" ? "active" : "inactive"}`}
-                      >
-                        {item.status}
-                      </span>
-                    </td>
-
-                    <td style={{ textAlign: 'center' }}>
-                      <div className="action-icons" style={{ justifyContent: 'center' }}>
-                        <Link
-                          to={`/sector-title/edit/${item.id}?page=${currentPage}`}
-                          state={item}
-                          className="icon-btn edit"
-                          title="Edit"
-                        >
-                          <Pencil size={18} />
-                        </Link>
-
-                        <button
-                          className="icon-btn delete"
-                          title="Delete"
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
+              <tbody>
+                {paginatedRows.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: '40px', color: '#9ca3af' }}>
+                      No Sector Titles Found
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                ) : (
+                  paginatedRows.map((item, index) => (
+                    <tr key={item.id}>
+                      <td style={{ textAlign: 'center' }}>{(currentPage - 1) * limit + index + 1}</td>
+                      <td
+                        style={{ cursor: "pointer", color: "#323da7", fontWeight: '600' }}
+                        onClick={() => {
+                          useBusinessStore.getState().setBusiness(item.name);
+                          navigate(`/sector?sectorTitleId=${item.id}`);
+                        }}
+                      >
+                        {item.name}
+                      </td>
 
-        {/* PAGINATION - Requirements #1, #2, #7 */}
-        {!loading && filteredRows.length > 0 && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '0 10px 10px', fontSize: '14px', color: '#6b7280' }}>
-            <div>
-              Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, filteredRows.length)} of {filteredRows.length} entries
-            </div>
 
-            <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
-              <div className="page-jump-box">
-                <span>Go to Page:</span>
-                <input
-                  type="text"
-                  className="jump-input"
-                  value={jumpInput}
-                  onChange={(e) => handleJumpChange(e.target.value)}
-                />
-              </div>
+                      <td className="photo-cell" style={{ width: '20%', textAlign: 'center' }}>
+                        {item.image ? (
+                          <div className="table-img-wrapper" style={{ margin: '0 auto' }}>
+                            <img
+                              src={`${IMAGE_BASE_URL}/${item.image}`}
+                              alt={item.name}
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = "https://via.placeholder.com/60?text=No+Img";
+                              }}
+                            />
+                          </div>
+                        ) : (
+                          <div className="table-img-wrapper empty" style={{ margin: '0 auto' }}>
+                            <Camera size={20} className="camera-placeholder" />
+                          </div>
+                        )}
+                      </td>
 
-              <div className="pagination-container">
-                <button
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage === 1}
-                  className="pagination-btn"
-                  title="First Page"
-                >
-                  ≪
-                </button>
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  className="pagination-btn"
-                  title="Previous Page"
-                >
-                  ‹
-                </button>
+                      <td style={{ textAlign: 'center' }}>
+                        <span
+                          className={`status ${item.status === "active" ? "active" : "inactive"}`}
+                        >
+                          {item.status}
+                        </span>
+                      </td>
 
-                {getPageNumbers().map((num, i) => (
-                  num === "..." ? (
-                    <span key={`ell-${i}`} className="pagination-ellipsis">...</span>
-                  ) : (
-                    <button
-                      key={num}
-                      onClick={() => setCurrentPage(Number(num))}
-                      className={`pagination-btn ${currentPage === num ? 'active' : ''}`}
-                    >
-                      {num}
-                    </button>
-                  )
-                ))}
+                      <td style={{ textAlign: 'center' }}>
+                        <div className="action-icons" style={{ justifyContent: 'center' }}>
+                          <Link
+                            to={`/sector-title/edit/${item.id}?page=${currentPage}`}
+                            state={item}
+                            className="icon-btn edit"
+                            title="Edit"
+                          >
+                            <Pencil size={18} />
+                          </Link>
 
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  className="pagination-btn"
-                  title="Next Page"
-                >
-                  ›
-                </button>
-                <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="pagination-btn"
-                  title="Last Page"
-                >
-                  ≫
-                </button>
-              </div>
-            </div>
+                          <button
+                            className="icon-btn delete"
+                            title="Delete"
+                            onClick={() => handleDelete(item.id)}
+                          >
+                            <Trash2 size={18} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
-      </div>
+
+          {/* PAGINATION - Requirements #1, #2, #7 */}
+          {!loading && filteredRows.length > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', padding: '0 10px 10px', fontSize: '14px', color: '#6b7280' }}>
+              <div>
+                Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, filteredRows.length)} of {filteredRows.length} entries
+              </div>
+
+              <div style={{ display: 'flex', gap: '25px', alignItems: 'center' }}>
+                <div className="page-jump-box">
+                  <span>Go to Page:</span>
+                  <input
+                    type="text"
+                    className="jump-input"
+                    value={jumpInput}
+                    onChange={(e) => handleJumpChange(e.target.value)}
+                  />
+                </div>
+
+                <div className="pagination-container">
+                  <button
+                    onClick={() => setCurrentPage(1)}
+                    disabled={currentPage === 1}
+                    className="pagination-btn"
+                    title="First Page"
+                  >
+                    ≪
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="pagination-btn"
+                    title="Previous Page"
+                  >
+                    ‹
+                  </button>
+
+                  {getPageNumbers().map((num, i) => (
+                    num === "..." ? (
+                      <span key={`ell-${i}`} className="pagination-ellipsis">...</span>
+                    ) : (
+                      <button
+                        key={num}
+                        onClick={() => setCurrentPage(Number(num))}
+                        className={`pagination-btn ${currentPage === num ? 'active' : ''}`}
+                      >
+                        {num}
+                      </button>
+                    )
+                  ))}
+
+                  <button
+                    onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="pagination-btn"
+                    title="Next Page"
+                  >
+                    ›
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage(totalPages)}
+                    disabled={currentPage === totalPages}
+                    className="pagination-btn"
+                    title="Last Page"
+                  >
+                    ≫
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </MultitabContentLoader>
     </div>
   );
 };

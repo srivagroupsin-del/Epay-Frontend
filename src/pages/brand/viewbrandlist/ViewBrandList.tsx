@@ -12,6 +12,7 @@ import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import { useDeleteConfirm } from "../../../context/DeleteConfirmContext";
 import GlobalStoreHeader from "../../../components/common/GlobalStoreHeader";
 import { useBrandStore } from "../../../store/useBrandStore";
+import { MultitabContentLoader } from "../../../components/multitab/MultitabContentLoader";
 import "./ViewBrandList.css";
 
 
@@ -151,7 +152,8 @@ const ViewBrandList = () => {
     <div className="page-container">
       <GlobalStoreHeader />
 
-      {/* HEADER */}
+      <MultitabContentLoader menuTitle="Brand">
+        {/* HEADER */}
       <div className="page-header">
         <div>
           <h2>Brand – Master</h2>
@@ -401,6 +403,7 @@ const ViewBrandList = () => {
           </div>
         )}
       </div>
+      </MultitabContentLoader>
     </div>
   );
 };

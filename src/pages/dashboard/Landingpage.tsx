@@ -1,24 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { LayoutDashboard } from "lucide-react";
-import LoadingOverlay from "../../components/loading-overlay/LoadingOverlay";
 import SuccessPopup from "../../components/success-popup/SuccessPopup";
 
 const LandingPage: React.FC = () => {
-  const [isLoading, setIsLoading] = useState(true);
   const [isSuccessOpen, setIsSuccessOpen] = useState(false);
-
-  // Simulate initial data fetch
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); // Show loading for 2 seconds
-    return () => clearTimeout(timer);
-  }, []);
 
 
   return (
     <>
-      <LoadingOverlay isLoading={isLoading} message="Processing your request..." />
       <SuccessPopup
         isOpen={isSuccessOpen}
         onClose={() => setIsSuccessOpen(false)}

@@ -68,64 +68,27 @@ import EditTax from "./pages/variant/edittax/EditTax";
 import DiscountManagement from "./pages/variant/discount/DiscountManagement";
 import OfferManagement from "./pages/variant/offer/OfferManagement";
 
-import AddMenu from "./pages/settings/sector_title_multitab/addmenu/AddMenu";
-import AddTabheadingMaster from "./pages/settings/sector_title_multitab/addtabheadingmaster/AddTabheadingMaster";
-import AddCheckboxMaster from "./pages/settings/sector_title_multitab/addcheckboxmaster/AddCheckboxMaster";
-import AddMappingCheckbox from "./pages/settings/sector_title_multitab/addmappingcheckbox/AddMappingCheckbox";
-import AddPreviewTabs from "./pages/settings/sector_title_multitab/addpreviewtabs/AddPreviewTabs";
-
-/* SUBSECTOR MULTITAB IMPORTS */
-import AddSubMenu from "./pages/settings/subsector_multi_tab/addmenu/AddMenu";
-import AddSubTabheadingMaster from "./pages/settings/subsector_multi_tab/addtabheadingmaster/AddTabheadingMaster";
-import AddSubCheckboxMaster from "./pages/settings/subsector_multi_tab/addcheckboxmaster/AddCheckboxMaster";
-import AddSubMappingCheckbox from "./pages/settings/subsector_multi_tab/addmappingcheckbox/AddMappingCheckbox";
-import AddSubPreviewTabs from "./pages/settings/subsector_multi_tab/addpreviewtabs/AddPreviewTabs";
-
-/* SECTOR MULTI TAB IMPORTS */
-import AddSectorMultiTabMenu from "./pages/settings/sector_multi_tab/addmenu/AddSectorMultiTabMenu";
-import AddSectorTabHeadingMaster from "./pages/settings/sector_multi_tab/addtabheadingmaster/AddSectorTabHeadingMaster";
-import AddSectorCheckboxMaster from "./pages/settings/sector_multi_tab/addcheckboxmaster/AddSectorCheckboxMaster";
-import AddSectorMappingCheckbox from "./pages/settings/sector_multi_tab/addmappingcheckbox/AddSectorMappingCheckbox";
-import AddSectorPreviewTabs from "./pages/settings/sector_multi_tab/addpreviewtabs/AddSectorPreviewTabs";
-
-/* CATEGORY MULTI TAB IMPORTS */
-import AddCategoryMenu from "./pages/settings/category_multi_tab/addmenu/AddCategoryMenu";
-import AddCategoryTabHeadingMaster from "./pages/settings/category_multi_tab/addtabheadingmaster/AddCategoryTabHeadingMaster";
-import AddCategoryCheckboxMaster from "./pages/settings/category_multi_tab/addcheckboxmaster/AddCategoryCheckboxMaster";
-import AddCategoryMappingCheckbox from "./pages/settings/category_multi_tab/addmappingcheckbox/AddCategoryMappingCheckbox";
-import AddCategoryPreviewTabs from "./pages/settings/category_multi_tab/addpreviewtabs/AddCategoryPreviewTabs";
-
-/* BRAND MULTI TAB IMPORTS */
-import AddBrandMultitabMenu from "./pages/settings/brand_multi_tab/addmenu/AddBrandMultitabMenu";
-import AddBrandTabHeadingMaster from "./pages/settings/brand_multi_tab/addtabheadingmaster/AddBrandTabHeadingMaster";
-import AddBrandCheckboxMaster from "./pages/settings/brand_multi_tab/addcheckboxmaster/AddBrandCheckboxMaster";
-import AddBrandMappingCheckbox from "./pages/settings/brand_multi_tab/addmappingcheckbox/AddBrandMappingCheckbox";
-import AddBrandPreviewTabs from "./pages/settings/brand_multi_tab/addpreviewtabs/AddBrandPreviewTabs";
 import CategoryField from "./pages/category/categoryfield/CategoryField";
-import CategoryGroupView from "./pages/Category_group/view/view";
-import AddCategoryGroup from "./pages/Category_group/Add/addcategorygroup";
-import EditCategoryGroup from "./pages/Category_group/Edit/editcategorygroup";
-import CreateCategoryTitle from "./pages/Category_group/Create_Category_title/cc";
-import CategoryMapping from "./pages/Category_group/Mapping/CategoryMapping";
 
-/* CREATE TAB MULTI TAB IMPORTS */
-import CreateTabAddMenu from "./pages/Multi_tab/Create_Tab/Add_Menu/Add_menu";
-import CreateTabAddTabHeading from "./pages/Multi_tab/Create_Tab/Tab_Heading/Tab_Heading";
-import CreateTabAddCheckbox from "./pages/Multi_tab/Create_Tab/Check_Box/Check_box";
-import CreateTabAddMapping from "./pages/Multi_tab/Create_Tab/Mapping/Mapping";
-import CreateTabAddPreview from "./pages/Multi_tab/Create_Tab/Preview/Preview";
+/* MULTITAB IMPORTS */
+import MultitabMenus from "./pages/settings/multitab/MultitabMenus";
+import MultitabTabs from "./pages/settings/multitab/MultitabTabs";
+import MultitabCheckboxes from "./pages/settings/multitab/MultitabCheckboxes";
+import MultitabMappings from "./pages/settings/multitab/MultitabMappings";
+import MultitabPreview from "./pages/settings/multitab/MultitabPreview";
 
-/* MULTITAB CONFIGURATION IMPORTS */
-import MultitabMenu from "./pages/settings/multitab_configuration/MultitabMenu";
-import MultitabHeading from "./pages/settings/multitab_configuration/MultitabHeading";
-import MultitabCheckbox from "./pages/settings/multitab_configuration/MultitabCheckbox";
-import MultitabFields from "./pages/settings/multitab_configuration/MultitabFields";
-import MultitabConfig from "./pages/settings/multitab_configuration/MultitabConfig";
+import CategoryGroupView from "./pages/category-group/view/view";
+import AddCategoryGroup from "./pages/category-group/add/addcategorygroup";
+import EditCategoryGroup from "./pages/category-group/edit/editcategorygroup";
+import CreateCategoryTitle from "./pages/category-group/create-category-title/cc";
+import CategoryMapping from "./pages/category-group/mapping/CategoryMapping";
+
+
 
 /* ZUSTAND DEMO PAGES */
-import SelectBusiness from "./pages/SelectBusiness";
-import DashboardDemo from "./pages/Dashboard";
-import ProductsDemo from "./pages/Products";
+import SelectBusiness from "./pages/demo/SelectBusiness";
+import DashboardDemo from "./pages/demo/Dashboard";
+import ProductsDemo from "./pages/demo/Products";
 
 import { useEffect } from "react";
 import { MappingProvider } from "./context/MappingContext";
@@ -236,47 +199,7 @@ function App() {
           <Route path="/variant/discount-management" element={<DiscountManagement />} />
           <Route path="/variant/offer-management" element={<OfferManagement />} />
 
-          {/* SECTOR TITLE MULTITAB ROUTES */}
-          <Route path="/multitab/add-menu" element={<AddMenu />} />
-          <Route path="/multitab/add-tabheading" element={<AddTabheadingMaster />} />
-          <Route path="/multitab/add-checkbox" element={<AddCheckboxMaster />} />
-          <Route path="/multitab/add-mapping" element={<AddMappingCheckbox />} />
-          <Route path="/multitab/add-preview" element={<AddPreviewTabs />} />
 
-          {/* SUBSECTOR MULTITAB ROUTES */}
-          <Route path="/sub-multitab/add-menu" element={<AddSubMenu />} />
-          <Route path="/sub-multitab/add-tabheading" element={<AddSubTabheadingMaster />} />
-          <Route path="/sub-multitab/add-checkbox" element={<AddSubCheckboxMaster />} />
-          <Route path="/sub-multitab/add-mapping" element={<AddSubMappingCheckbox />} />
-          <Route path="/sub-multitab/add-preview" element={<AddSubPreviewTabs />} />
-
-          {/* SECTOR MULTI TAB ROUTES */}
-          <Route path="/sector-multitab/add-menu" element={<AddSectorMultiTabMenu />} />
-          <Route path="/sector-multitab/add-tabheading" element={<AddSectorTabHeadingMaster />} />
-          <Route path="/sector-multitab/add-checkbox" element={<AddSectorCheckboxMaster />} />
-          <Route path="/sector-multitab/add-mapping" element={<AddSectorMappingCheckbox />} />
-          <Route path="/sector-multitab/add-preview" element={<AddSectorPreviewTabs />} />
-
-          {/* CATEGORY MULTI TAB ROUTES */}
-          <Route path="/category-multitab/add-menu" element={<AddCategoryMenu />} />
-          <Route path="/category-multitab/add-tabheading" element={<AddCategoryTabHeadingMaster />} />
-          <Route path="/category-multitab/add-checkbox" element={<AddCategoryCheckboxMaster />} />
-          <Route path="/category-multitab/add-mapping" element={<AddCategoryMappingCheckbox />} />
-          <Route path="/category-multitab/add-preview" element={<AddCategoryPreviewTabs />} />
-
-          {/* BRAND MULTI TAB ROUTES */}
-          <Route path="/brand-multitab/add-menu" element={<AddBrandMultitabMenu />} />
-          <Route path="/brand-multitab/add-tabheading" element={<AddBrandTabHeadingMaster />} />
-          <Route path="/brand-multitab/add-checkbox" element={<AddBrandCheckboxMaster />} />
-          <Route path="/brand-multitab/add-mapping" element={<AddBrandMappingCheckbox />} />
-          <Route path="/brand-multitab/add-preview" element={<AddBrandPreviewTabs />} />
-
-          {/* CREATE TAB MULTI TAB ROUTES */}
-          <Route path="/create-tab-multitab/add-menu" element={<CreateTabAddMenu />} />
-          <Route path="/create-tab-multitab/add-tabheading" element={<CreateTabAddTabHeading />} />
-          <Route path="/create-tab-multitab/add-checkbox" element={<CreateTabAddCheckbox />} />
-          <Route path="/create-tab-multitab/add-mapping" element={<CreateTabAddMapping />} />
-          <Route path="/create-tab-multitab/add-preview" element={<CreateTabAddPreview />} />
 
           {/* SETTINGS */}
 
@@ -294,12 +217,15 @@ function App() {
           <Route path="/settings/page-creation" element={<PageCreation />} />
           <Route path="/settings/dynamic-form-creator" element={<DynamicFormCreator />} />
 
-          {/* MULTITAB CONFIGURATION ROUTES */}
-          <Route path="/settings/multitab-menu" element={<MultitabMenu />} />
-          <Route path="/settings/multitab-heading" element={<MultitabHeading />} />
-          <Route path="/settings/multitab-checkbox" element={<MultitabCheckbox />} />
-          <Route path="/settings/multitab-fields" element={<MultitabFields />} />
-          <Route path="/settings/multitab-config" element={<MultitabConfig />} />
+          {/* NEW MULTITAB SYSTEM */}
+          <Route path="/settings/multitab/menu" element={<MultitabMenus />} />
+          <Route path="/settings/multitab/tab-heading" element={<MultitabTabs />} />
+          <Route path="/settings/multitab/checkbox" element={<MultitabCheckboxes />} />
+          <Route path="/settings/multitab/mapping" element={<MultitabMappings />} />
+          <Route path="/settings/multitab/preview" element={<MultitabPreview />} />
+
+
+
 
           {/* ZUSTAND DEMO ROUTES */}
           <Route path="/demo/select-business" element={<SelectBusiness />} />

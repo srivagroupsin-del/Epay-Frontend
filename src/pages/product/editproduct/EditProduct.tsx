@@ -11,8 +11,6 @@ import {
 import { useMapping } from "../../../context/MappingContext";
 import { IMAGE_BASE_URL } from "../../../base_api/api_list";
 import QRScannerModal from "../../../components/qrscanner/QRScannerModal";
-import DynamicProductFields from "../../../components/product/DynamicProductFields";
-import { MultitabConfigApi } from "../../../api/multitabConfig.api";
 
 // Reuse styles from AddProduct
 import "../addproduct/AddProduct.css";
@@ -66,14 +64,18 @@ const EditProduct = () => {
         note: "",
         mrp: "",
         status: "active",
-        image: undefined,
-        dynamic_fields: {} as any
+        image: undefined
     });
-
-    // Dynamic Fields State
-    const [dynamicFieldValues, setDynamicFieldValues] = useState<any[]>([]);
-    const [fieldsByCategory, setFieldsByCategory] = useState<any>({});
     const [isScanning, setIsScanning] = useState(false);
+
+    const [barcodes, setBarcodes] = useState<Record<number, string>>({});
+
+    const handleBarcodeChange = (categoryId: number, value: string) => {
+        setBarcodes(prev => ({
+            ...prev,
+            [categoryId]: value
+        }));
+    };
 
     const [preview, setPreview] = useState<string | undefined>(undefined);
     const [filename, setFilename] = useState<string | null>(null);
@@ -102,25 +104,6 @@ const EditProduct = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // 🔥 Batch Fetch Dynamic Fields
-    useEffect(() => {
-        const categoryIds = Array.from(new Set(selectedMappings.map(m => m.secondary_id || m.primary_id)));
-        if (categoryIds.length === 0) {
-            setFieldsByCategory({});
-            return;
-        }
-
-        const fetchFields = async () => {
-            try {
-                const data = await MultitabConfigApi.getDynamicFields(categoryIds as any);
-                setFieldsByCategory(data || {});
-            } catch (err) {
-                console.error("Failed to fetch dynamic fields", err);
-            }
-        };
-        fetchFields();
-    }, [selectedMappings]);
-    
     // 🟢 Barcode Scanner Support (Global Listener)
     useEffect(() => {
         let scannerBuffer = "";
@@ -128,16 +111,11 @@ const EditProduct = () => {
 
         const handler = (e: KeyboardEvent) => {
             const now = Date.now();
-            
-            // If the time between keys is too long, it's manual typing, reset buffer
-            if (now - lastKeyTime > 100) {
-                scannerBuffer = "";
-            }
+            if (now - lastKeyTime > 100) scannerBuffer = "";
             lastKeyTime = now;
 
             if (e.key === "Enter") {
                 if (scannerBuffer.length > 0) {
-                    // This is a scanner input
                     e.preventDefault();
                     e.stopPropagation();
                     
@@ -146,28 +124,7 @@ const EditProduct = () => {
                     scannerBuffer = "";
 
                     const activeEl = document.activeElement as HTMLElement;
-                    const mappingId = activeEl?.getAttribute("data-mapping-id");
-                    const fieldId = activeEl?.getAttribute("data-field-id");
-
-                    if (mappingId && fieldId) {
-                        setDynamicFieldValues(prev => {
-                            const updated = [...prev];
-                            const mId = Number(mappingId);
-                            const fId = Number(fieldId);
-                            
-                            const idx = updated.findIndex(v => v.mapping_id === mId && v.field_id === fId);
-                            if (idx > -1) {
-                                updated[idx] = { ...updated[idx], value: scannedValue };
-                            } else {
-                                updated.push({
-                                    mapping_id: mId,
-                                    field_id: fId,
-                                    value: scannedValue
-                                });
-                            }
-                            return updated;
-                        });
-                    } else if (activeEl?.getAttribute("name") === "model") {
+                    if (activeEl?.getAttribute("name") === "model") {
                         setForm(prev => ({ ...prev, model: scannedValue }));
                     }
                     
@@ -178,9 +135,9 @@ const EditProduct = () => {
             }
         };
 
-        window.addEventListener("keydown", handler, true); // Use capture phase to intercept Enter
+        window.addEventListener("keydown", handler, true);
         return () => window.removeEventListener("keydown", handler, true);
-    }, [selectedMappings, fieldsByCategory]);
+    }, []);
 
     /* ---------------- INITIAL DATA LOADING ---------------- */
     useEffect(() => {
@@ -209,11 +166,16 @@ const EditProduct = () => {
                     mrp: product.mrp || "",
                     option_set: product.option_set ?? 0,
                     status: product.status || "active",
-                    image: undefined,
-                    dynamic_fields: product.dynamic_fields || []
+                    image: undefined
                 });
 
-                setDynamicFieldValues(product.dynamic_fields || []);
+                if (Array.isArray(product.barcodes)) {
+                    const initialBarcodes: Record<number, string> = {};
+                    product.barcodes.forEach((b: any) => {
+                        initialBarcodes[b.category_id] = b.barcode;
+                    });
+                    setBarcodes(initialBarcodes);
+                }
 
                 if (product.base_image) {
                     setPreview(`${IMAGE_BASE_URL}${product.base_image}`);
@@ -470,19 +432,24 @@ const EditProduct = () => {
         showLoader("Updating product...");
         try {
             const { alternative_name: _, ...rest } = form;
+
+            const activeCategoryIds = new Set(selectedMappings.map(m => m.secondary_id || m.primary_id));
+            const filteredBarcodes = Object.entries(barcodes)
+                .filter(([catId, value]) => activeCategoryIds.has(Number(catId)) && value.trim())
+                .map(([catId, val]) => ({
+                    category_id: Number(catId),
+                    barcode: val.trim()
+                }));
+
             const payload = {
                 ...rest,
                 alternative_names: (form.alternative_names || []).filter(item => item.trim()),
+                barcodes: filteredBarcodes,
                 option_set: form.option_set ? 1 : 0,
                 mappings: selectedMappings.map(m => ({
                     primary_id: m.primary_id,
                     secondary_id: m.secondary_id,
                     brand_id: m.brand_id
-                })),
-                dynamic_fields: (dynamicFieldValues || []).map((f: any) => ({
-                    mapping_id: f.mapping_id,
-                    field_id: f.field_id,
-                    value: f.value ?? ""
                 }))
             };
             await updateProduct(id!, payload as any);
@@ -513,7 +480,9 @@ const EditProduct = () => {
 
                 {/* Mapping UI */}
                 <div className="mapping-selection-section" style={{ padding: '24px', backgroundColor: '#f8fafc', borderRadius: '16px', marginBottom: '32px', border: '1px solid #e2e8f0' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '20px', color: '#1e293b' }}>Category & Brand Mappings</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
+                        <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#1e293b', margin: 0 }}>Category & Brand Mappings</h3>
+                    </div>
                     <div className="product-form-grid" style={{ marginBottom: '20px' }}>
 
                         <div className={`inline-form-field ${showPrimaryList ? 'active' : ''}`} ref={primaryRef}>
@@ -609,15 +578,28 @@ const EditProduct = () => {
                                     </button>
                                 </div>
 
-                                <DynamicProductFields 
-                                    mapping_id={m.mapping_id}
-                                    fields={[
-                                        ...(fieldsByCategory.global || []),
-                                        ...(fieldsByCategory[m.secondary_id || m.primary_id] || [])
-                                    ]}
-                                    dynamicFields={dynamicFieldValues}
-                                    setDynamicFields={setDynamicFieldValues}
-                                />
+                                {/* BARCODE FIELD */}
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
+                                        Barcode (for {m.secondary_name || m.primary_name})
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Barcode..."
+                                        className="barcode-input"
+                                        value={barcodes[m.secondary_id || m.primary_id] || ""}
+                                        onChange={(e) => handleBarcodeChange(m.secondary_id || m.primary_id, e.target.value)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '8px 12px',
+                                            border: '1px solid #cbd5e1',
+                                            borderRadius: '6px',
+                                            fontSize: '14px',
+                                            boxSizing: 'border-box'
+                                        }}
+                                    />
+                                </div>
+
                             </div>
                         ))}
                     </div>

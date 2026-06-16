@@ -1,21 +1,28 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { useNavigate, useSearchParams, Link, useLocation } from "react-router-dom";
-import { IMAGE_BASE_URL } from "../../../base_api/api_list";
+import { IMAGE_BASE_URL, BASE_URL } from "../../../base_api/api_list";
 import {
     getProducts,
     deleteProduct,
+    getProductById,
+    generateProductBarcode,
     type Product,
 } from "../../../api/product.api";
+import { getCategories } from "../../../api/category.api";
+import { getBrands } from "../../../api/brand.api";
+import { getBrandMapping } from "../../../api/brandMapping.api";
 import {
     SquarePen,
     Trash2,
     QrCode,
     X,
+    RotateCcw,
 } from "lucide-react";
-import QRCode from "react-qr-code";
+import { Select } from "antd";
 import { useLoading } from "../../../context/LoadingContext";
 import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import { useDeleteConfirm } from "../../../context/DeleteConfirmContext";
+import { MultitabContentLoader } from "../../../components/multitab/MultitabContentLoader";
 import "./ViewProduct.css";
 
 const ViewProduct = () => {
@@ -32,12 +39,13 @@ const ViewProduct = () => {
     const { showLoader, hideLoader } = useLoading();
     const { showDeleteSuccess } = useSuccessPopup();
     const { confirmDelete } = useDeleteConfirm();
-    
+
     // Filters State
     const [search, setSearch] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
     const [selectedBrand, setSelectedBrand] = useState("All Brands");
-    const [selectedCategory, setSelectedCategory] = useState("All Categories");
+    const [selectedPrimary, setSelectedPrimary] = useState("All Primary Categories");
+    const [selectedSecondary, setSelectedSecondary] = useState("All Secondary Categories");
     const [selectedStatus, setSelectedStatus] = useState("Status");
 
     const [limit, setLimit] = useState(20);
@@ -45,21 +53,69 @@ const ViewProduct = () => {
     const [jumpInput, setJumpInput] = useState(String(urlPage));
 
     // Meta-data for dependent dropdowns
-    const [allProductsMeta, setAllProductsMeta] = useState<Product[]>([]);
+    const [allCategories, setAllCategories] = useState<any[]>([]);
+    const [allBrands, setAllBrands] = useState<any[]>([]);
+    const [categoryBrandMappings, setCategoryBrandMappings] = useState<any[]>([]);
 
     // Debounce search input and Reset Selection
+    const isFirstMount = useRef(true);
     useEffect(() => {
+        if (isFirstMount.current) {
+            isFirstMount.current = false;
+            return;
+        }
+
         const handler = setTimeout(() => {
             setDebouncedSearch(search);
-            // reset logic: When search changes, reset brand and category
+            // reset logic: When search changes, reset all dropdowns
             setSelectedBrand("All Brands");
-            setSelectedCategory("All Categories");
-            setCurrentPage(1); 
+            setSelectedPrimary("All Primary Categories");
+            setSelectedSecondary("All Secondary Categories");
+            setCurrentPage(1);
         }, 500);
         return () => clearTimeout(handler);
     }, [search]);
 
-    const [showQR, setShowQR] = useState<Product | null>(null);
+    const [showQR, setShowQR] = useState<any | null>(null);
+    const [selectedBarcode, setSelectedBarcode] = useState<any>(null);
+
+    const handleShowQR = async (product: any) => {
+        try {
+            showLoader("Loading barcodes...");
+            const pData = await getProductById(product.id);
+            const fullProduct = pData.data || pData;
+            setShowQR(fullProduct);
+            if (fullProduct.barcodes && fullProduct.barcodes.length > 0) {
+                setSelectedBarcode(fullProduct.barcodes[0]);
+            } else {
+                setSelectedBarcode(null);
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Failed to load product details for QR code");
+        } finally {
+            hideLoader();
+        }
+    };
+
+    const handleGenerateBarcode = async (categoryId?: number) => {
+        try {
+            showLoader("Generating barcode...");
+            const res = await generateProductBarcode(showQR.id, categoryId);
+            const pData = await getProductById(showQR.id);
+            const fullProduct = pData.data || pData;
+            setShowQR(fullProduct);
+            const generated = fullProduct.barcodes?.find((b: any) => b.category_id === res.category_id);
+            if (generated) {
+                setSelectedBarcode(generated);
+            }
+        } catch (err: any) {
+            console.error(err);
+            alert(err.message || "Failed to generate barcode");
+        } finally {
+            hideLoader();
+        }
+    };
 
     useEffect(() => {
         setSearchParams({ page: String(currentPage) }, { replace: true });
@@ -69,80 +125,127 @@ const ViewProduct = () => {
     // Main data fetcher
     useEffect(() => {
         loadData();
-    }, [currentPage, limit, debouncedSearch, selectedBrand, selectedCategory, selectedStatus, location.key]);
+    }, [currentPage, limit, debouncedSearch, selectedBrand, selectedPrimary, selectedSecondary, selectedStatus, location.key]);
 
     // Initial meta-fetch for filters
     useEffect(() => {
         const fetchMeta = async () => {
             try {
-                // Fetch products without pagination to get unique filter values
-                const response = await getProducts();
-                const data = response.products || response.data || (Array.isArray(response) ? response : []);
-                setAllProductsMeta(data);
+                // Fetch ONLY categories, brands, and category-brand mappings
+                const [cats, brnds, mappings] = await Promise.all([
+                    getCategories(),
+                    getBrands(),
+                    getBrandMapping()
+                ]);
+                setAllCategories(Array.isArray(cats) ? cats : []);
+                setAllBrands(Array.isArray(brnds) ? brnds : []);
+                setCategoryBrandMappings(Array.isArray(mappings) ? mappings : []);
             } catch (err) {
-                console.error("Failed to fetch meta-data", err);
+                console.error("Failed to fetch categories, brands or mappings", err);
             }
         };
         fetchMeta();
     }, []);
 
-    // 🔹 1. Products filtered by Search only (for Brand List)
-    const productsBySearch = useMemo(() => {
-        const term = debouncedSearch.trim().toLowerCase();
-        if (!term) return allProductsMeta;
-        return allProductsMeta.filter(p => 
-            String(p.product_name || "").toLowerCase().includes(term) ||
-            String(p.model || "").toLowerCase().includes(term)
-        );
-    }, [allProductsMeta, debouncedSearch]);
+    // 🔹 1. Dynamic Primary Category Dropdown
+    const primaryOptions = useMemo(() => {
+        const primaryCats = allCategories.filter(c => c.parent_category_id === null || c.category_type === 'primary');
+        const names = [...new Set(primaryCats.map(c => c.category_name).filter(Boolean))];
+        return ["All Primary Categories", ...names.sort()];
+    }, [allCategories]);
 
-    // 🔹 2. Dynamic Brand Dropdown (Depends on Search)
+    // 🔹 2. Dynamic Secondary Category Dropdown (Dependent on Primary)
+    const secondaryOptions = useMemo(() => {
+        let secondaryCats = allCategories.filter(c => c.parent_category_id !== null || c.category_type === 'secondary');
+        if (selectedPrimary !== "All Primary Categories") {
+            secondaryCats = secondaryCats.filter(c => c.parent_category_name === selectedPrimary);
+        }
+        const names = [...new Set(secondaryCats.map(c => c.category_name).filter(Boolean))];
+        return ["All Secondary Categories", ...names.sort()];
+    }, [allCategories, selectedPrimary]);
+
+    // 🔹 3. Dynamic Brand Dropdown (Dependent on Category)
     const brandOptions = useMemo(() => {
-        // Use p.brands as primary source per user request
-        const uniqueBrands = [...new Set(productsBySearch.map(p => p.brands).filter(Boolean))];
-        return ["All Brands", ...uniqueBrands.sort()];
-    }, [productsBySearch]);
+        if (selectedSecondary !== "All Secondary Categories") {
+            const matchedBrands = new Set<string>();
+            for (const item of categoryBrandMappings) {
+                for (const sec of item.secondaries || []) {
+                    if (sec.secondary_name === selectedSecondary) {
+                        for (const b of sec.brands || []) {
+                            if (b.brand_name) matchedBrands.add(b.brand_name);
+                        }
+                    }
+                }
+            }
+            const names = Array.from(matchedBrands);
+            return ["All Brands", ...names.sort()];
+        }
+        
+        if (selectedPrimary !== "All Primary Categories") {
+            const matchedBrands = new Set<string>();
+            for (const item of categoryBrandMappings) {
+                if (item.primary_name === selectedPrimary) {
+                    for (const b of item.brands || []) {
+                        if (b.brand_name) matchedBrands.add(b.brand_name);
+                    }
+                    for (const sec of item.secondaries || []) {
+                        for (const b of sec.brands || []) {
+                            if (b.brand_name) matchedBrands.add(b.brand_name);
+                        }
+                    }
+                }
+            }
+            const names = Array.from(matchedBrands);
+            return ["All Brands", ...names.sort()];
+        }
 
-    // 🔹 3. Products filtered by Search + Brand (for Category List)
-    const productsBySearchAndBrand = useMemo(() => {
-        const data = productsBySearch;
-        if (selectedBrand === "All Brands") return data;
-        return data.filter(p => p.brands === selectedBrand);
-    }, [productsBySearch, selectedBrand]);
+        const names = [...new Set(allBrands.map(b => b.brand_name).filter(Boolean))];
+        return ["All Brands", ...names.sort()];
+    }, [allBrands, categoryBrandMappings, selectedPrimary, selectedSecondary]);
 
-    // 🔹 4. Category Dropdown Dependency (Depends on Search + Brand)
-    const filteredCategories = useMemo(() => {
-        // Use p.categories as primary source per user request
-        const uniqueCategories = [...new Set(productsBySearchAndBrand.map(p => p.categories).filter(Boolean))];
-        return ["All Categories", ...uniqueCategories.sort()];
-    }, [productsBySearchAndBrand]);
+    const handlePrimaryChange = (val: string) => {
+        setSelectedPrimary(val);
+        setSelectedSecondary("All Secondary Categories");
+        setSelectedBrand("All Brands");
+        setCurrentPage(1);
+    };
 
-    // When Brand changes: Reset category to "All Categories"
-    const handleBrandChange = (brand: string) => {
-        setSelectedBrand(brand);
-        setSelectedCategory("All Categories");
+    const handleSecondaryChange = (val: string) => {
+        setSelectedSecondary(val);
+        setSelectedBrand("All Brands");
+        setCurrentPage(1);
+    };
+
+    const handleResetFilters = () => {
+        setSearch("");
+        setDebouncedSearch("");
+        setSelectedBrand("All Brands");
+        setSelectedPrimary("All Primary Categories");
+        setSelectedSecondary("All Secondary Categories");
+        setSelectedStatus("Status");
+        setLimit(20);
         setCurrentPage(1);
     };
 
     const loadData = async () => {
         try {
             setLoading(true);
-            showLoader("Loading products, please wait...");
             const response = await getProducts({
                 page: currentPage,
                 limit: limit,
                 search: debouncedSearch,
                 brand: selectedBrand === "All Brands" ? "" : selectedBrand,
-                category: selectedCategory === "All Categories" ? "" : selectedCategory,
+                primary_category: selectedPrimary === "All Primary Categories" ? "" : selectedPrimary,
+                secondary_category: selectedSecondary === "All Secondary Categories" ? "" : selectedSecondary,
                 status: (selectedStatus === "" || selectedStatus === "Status" || selectedStatus === "All Status") ? "" : selectedStatus
             });
-            
+
             // Handle different possible API response structures
             const data = response.products || response.data || (Array.isArray(response) ? response : []);
             const total = response.total !== undefined ? response.total : (response.count !== undefined ? response.count : (Array.isArray(response) ? response.length : 0));
-            
+
             // Sort alphabetically (A-Z) and numerically
-            const sortedData = data.sort((a: any, b: any) => 
+            const sortedData = data.sort((a: any, b: any) =>
                 String(a.product_name || "").localeCompare(String(b.product_name || ""), undefined, { numeric: true, sensitivity: 'base' })
             );
 
@@ -153,7 +256,6 @@ const ViewProduct = () => {
             console.error(err);
         } finally {
             setLoading(false);
-            hideLoader();
         }
     };
 
@@ -173,7 +275,7 @@ const ViewProduct = () => {
     };
 
     const totalPages = Math.ceil(totalItems / limit);
-    
+
     // With server-side pagination, 'products' already contains the paginated set
     const paginatedProducts = products;
 
@@ -198,20 +300,19 @@ const ViewProduct = () => {
         }
     }, [totalPages, currentPage]);
 
-    if (loading) return <div className="p-8 text-center font-semibold">Loading product data...</div>;
-
     return (
         <div className="page-container">
-            <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <MultitabContentLoader menuTitle="Products">
+                <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                     <h2 style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        View Product List 
-                        <span style={{ 
-                            fontSize: '14px', 
-                            fontWeight: '600', 
-                            background: '#e2e8f0', 
-                            color: '#475569', 
-                            padding: '4px 12px', 
+                        View Product List
+                        <span style={{
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            background: '#e2e8f0',
+                            color: '#475569',
+                            padding: '4px 12px',
                             borderRadius: '20px',
                             marginTop: '4px'
                         }}>
@@ -248,82 +349,58 @@ const ViewProduct = () => {
                     />
                 </div>
 
+                {/* PRIMARY CATEGORY FILTER */}
+                <div className="filter">
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>PRIMARY CATEGORY</label>
+                    <Select
+                        showSearch
+                        value={selectedPrimary}
+                        onChange={val => handlePrimaryChange(val)}
+                        style={{ minWidth: '180px', height: '45px' }}
+                        options={primaryOptions.map(c => ({ value: c, label: c }))}
+                        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+                    />
+                </div>
+
+                {/* SECONDARY CATEGORY FILTER */}
+                <div className="filter">
+                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>SECONDARY CATEGORY</label>
+                    <Select
+                        showSearch
+                        value={selectedSecondary}
+                        onChange={val => handleSecondaryChange(val)}
+                        style={{ minWidth: '180px', height: '45px' }}
+                        options={secondaryOptions.map(c => ({ value: c, label: c }))}
+                        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+                    />
+                </div>
+
                 {/* BRAND FILTER */}
                 <div className="filter">
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>BRAND</label>
-                    <select
+                    <Select
+                        showSearch
                         value={selectedBrand}
-                        onChange={e => handleBrandChange(e.target.value)}
-                        style={{
-                            padding: "0 12px",
-                            border: "1px solid #e2e8f0",
-                            borderRadius: "10px",
-                            fontSize: "14px",
-                            height: '45px',
-                            minWidth: '150px',
-                            color: '#1e293b',
-                            background: '#fff',
-                            outline: 'none',
-                            cursor: 'pointer',
-                            fontWeight: '600'
-                        }}
-                    >
-                        {brandOptions.map(b => (
-                            <option key={b} value={b}>{b}</option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* CATEGORY FILTER */}
-                <div className="filter">
-                    <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>CATEGORY</label>
-                    <select
-                        value={selectedCategory}
-                        onChange={e => { setSelectedCategory(e.target.value); setCurrentPage(1); }}
-                        style={{
-                            padding: "0 12px",
-                            border: "1px solid #e2e8f0",
-                            borderRadius: "10px",
-                            fontSize: "14px",
-                            height: '45px',
-                            minWidth: '150px',
-                            color: '#1e293b',
-                            background: '#fff',
-                            outline: 'none',
-                            cursor: 'pointer',
-                            fontWeight: '600'
-                        }}
-                    >
-                        {filteredCategories.map(c => (
-                            <option key={c} value={c}>{c}</option>
-                        ))}
-                    </select>
+                        onChange={val => { setSelectedBrand(val); setCurrentPage(1); }}
+                        style={{ minWidth: '150px', height: '45px' }}
+                        options={brandOptions.map(b => ({ value: b, label: b }))}
+                        filterOption={(input, option) => (option?.label ?? '').toLowerCase().includes(input.toLowerCase())}
+                    />
                 </div>
 
                 {/* STATUS FILTER */}
                 <div className="filter">
                     <label style={{ display: 'block', fontSize: '12px', fontWeight: '700', color: '#64748b', marginBottom: '8px', textTransform: 'uppercase' }}>STATUS</label>
-                    <select
+                    <Select
                         value={selectedStatus}
-                        onChange={e => { setSelectedStatus(e.target.value); setCurrentPage(1); }}
-                        style={{
-                            padding: "0 12px",
-                            border: "1px solid #e2e8f0",
-                            borderRadius: "10px",
-                            fontSize: "14px",
-                            height: '45px',
-                            minWidth: '120px',
-                            color: '#1e293b',
-                            background: '#fff',
-                            outline: 'none',
-                            cursor: 'pointer',
-                            fontWeight: '600'
-                        }}
-                    >
-                        <option value="Status">All Status</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                    </select>
+                        onChange={val => { setSelectedStatus(val); setCurrentPage(1); }}
+                        style={{ minWidth: '120px', height: '45px' }}
+                        options={[
+                            { value: "Status", label: "All Status" },
+                            { value: "active", label: "Active" },
+                            { value: "inactive", label: "Inactive" }
+                        ]}
+                    />
                 </div>
 
                 <div className="filter">
@@ -364,6 +441,35 @@ const ViewProduct = () => {
                         }}
                     />
                 </div>
+
+                {/* RESET BUTTON */}
+                <div className="filter" style={{ display: 'flex', alignItems: 'flex-end' }}>
+                    <button
+                        onClick={handleResetFilters}
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '8px',
+                            height: '45px',
+                            padding: '0 20px',
+                            border: 'none',
+                            borderRadius: '10px',
+                            background: '#e2e8f0',
+                            color: '#475569',
+                            fontSize: '14px',
+                            fontWeight: '600',
+                            cursor: 'pointer',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+                        }}
+                        onMouseEnter={e => { e.currentTarget.style.background = '#cbd5e1'; e.currentTarget.style.color = '#1e293b'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = '#e2e8f0'; e.currentTarget.style.color = '#475569'; }}
+                    >
+                        <RotateCcw size={16} />
+                        Reset Filters
+                    </button>
+                </div>
             </div>
 
             {/* QR CODE MODAL */}
@@ -375,17 +481,92 @@ const ViewProduct = () => {
                             <button onClick={() => setShowQR(null)}><X size={20} /></button>
                         </div>
                         <div className="qr-content" id="print-area">
-                            <div className="qr-code-wrapper">
-                                <QRCode
-                                    value={`Product: ${showQR.product_name}\nModel: ${showQR.model || 'N/A'}\nMRP: ₹${showQR.mrp || 0}\nBrand: ${showQR.brands || 'N/A'}`}
-                                    size={180}
-                                    level="H"
-                                />
+                            {showQR.barcodes && showQR.barcodes.length > 0 && (
+                                <div style={{ marginBottom: "15px", width: "100%", zIndex: 9999 }}>
+                                    <label style={{ display: "block", fontSize: "12px", fontWeight: "700", color: "#64748b", marginBottom: "6px" }}>
+                                        SELECT CATEGORY BARCODE
+                                    </label>
+                                    <Select
+                                        value={selectedBarcode?.category_id}
+                                        onChange={(val) => {
+                                            const found = showQR.barcodes.find((b: any) => b.category_id === val);
+                                            setSelectedBarcode(found);
+                                        }}
+                                        style={{ width: "100%", height: "40px" }}
+                                        options={showQR.barcodes.map((b: any) => ({
+                                            value: b.category_id,
+                                            label: `${b.category_name}: ${b.barcode}`
+                                        }))}
+                                    />
+                                </div>
+                            )}
+
+                            <div className="qr-code-wrapper" style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "180px", marginBottom: "15px" }}>
+                                {selectedBarcode ? (
+                                    <img
+                                        src={`${BASE_URL.replace(/\/+$/, "")}/products/qrc/${encodeURIComponent(selectedBarcode.barcode)}`}
+                                        alt="Backend QR Code"
+                                        style={{ width: "180px", height: "180px" }}
+                                    />
+                                ) : showQR.model ? (
+                                    <img
+                                        src={`${BASE_URL.replace(/\/+$/, "")}/products/qrc/${encodeURIComponent(showQR.model)}`}
+                                        alt="Backend QR Code (Model)"
+                                        style={{ width: "180px", height: "180px" }}
+                                    />
+                                ) : (
+                                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "12px", textAlign: "center" }}>
+                                        <div style={{ fontSize: "14px", color: "#ef4444", fontWeight: "600" }}>
+                                            No barcode or model code available to generate QR
+                                        </div>
+                                        {showQR.mappings && showQR.mappings.length > 0 ? (
+                                            <button
+                                                className="btn primary"
+                                                onClick={() => handleGenerateBarcode(showQR.mappings[0].category_id)}
+                                                style={{ padding: "8px 16px", fontSize: "14px", border: "none", borderRadius: "8px", background: "#3b82f6", color: "#fff", fontWeight: "600", cursor: "pointer" }}
+                                            >
+                                                Generate Barcode
+                                            </button>
+                                        ) : (
+                                            <div style={{ fontSize: "12px", color: "#64748b" }}>
+                                                Map this product to a category to generate a barcode
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
                             </div>
+
+                            {selectedBarcode && (
+                                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
+                                    <button
+                                        onClick={() => handleGenerateBarcode(selectedBarcode.category_id)}
+                                        style={{
+                                            background: "#f1f5f9",
+                                            border: "1px solid #cbd5e1",
+                                            color: "#475569",
+                                            padding: "6px 12px",
+                                            borderRadius: "8px",
+                                            fontSize: "12px",
+                                            fontWeight: "600",
+                                            cursor: "pointer",
+                                            transition: "all 0.2s"
+                                        }}
+                                        onMouseEnter={e => e.currentTarget.style.background = "#e2e8f0"}
+                                        onMouseLeave={e => e.currentTarget.style.background = "#f1f5f9"}
+                                    >
+                                        Regenerate Barcode
+                                    </button>
+                                </div>
+                            )}
                             <div className="qr-info">
                                 <h4>{showQR.product_name}</h4>
                                 <p>Model: {showQR.model || "—"}</p>
                                 <p>Brand: {showQR.brands || "—"}</p>
+                                {selectedBarcode && (
+                                    <p style={{ fontWeight: "600", color: "#2563eb", marginTop: "8px" }}>
+                                        Category: {selectedBarcode.category_name} ({selectedBarcode.barcode})
+                                    </p>
+                                )}
                                 <div className="qr-price-tag">₹{showQR.mrp || 0}</div>
                             </div>
                         </div>
@@ -403,21 +584,21 @@ const ViewProduct = () => {
 
 
             {!loading && (
-                <div style={{ 
-                    padding: '0 5px 15px 5px', 
-                    fontSize: '14px', 
-                    color: '#64748b', 
+                <div style={{
+                    padding: '0 5px 15px 5px',
+                    fontSize: '14px',
+                    color: '#64748b',
                     fontWeight: '600',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                 }}>
-                    <span style={{ 
-                        display: 'inline-block', 
-                        width: '8px', 
-                        height: '8px', 
-                        borderRadius: '50%', 
-                        background: '#323da7' 
+                    <span style={{
+                        display: 'inline-block',
+                        width: '8px',
+                        height: '8px',
+                        borderRadius: '50%',
+                        background: '#323da7'
                     }}></span>
                     Total Entries: {totalItems}
                 </div>
@@ -446,7 +627,7 @@ const ViewProduct = () => {
                         <tbody>
                             {paginatedProducts.map((p: any, i) => {
                                 // Use stored names directly from API response
-                                const displayCategory = p.categories || "—";
+                                const displayCategory = p.secondary_category || p.primary_category || p.categories || "—";
                                 const displayBrand = p.brands || "—";
 
                                 return (
@@ -501,7 +682,7 @@ const ViewProduct = () => {
                                                 <button
                                                     className="btn-icon-action qr"
                                                     title="QR Code"
-                                                    onClick={() => setShowQR(p)}
+                                                    onClick={() => handleShowQR(p)}
                                                 >
                                                     <QrCode size={24} />
                                                 </button>
@@ -592,6 +773,7 @@ const ViewProduct = () => {
                     </div>
                 </div>
             )}
+            </MultitabContentLoader>
         </div>
     );
 };

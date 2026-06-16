@@ -13,6 +13,7 @@ export type Product = {
     model?: string;
     series?: string;
     alternative_names?: string[];
+    barcodes?: { category_id: number; category_name?: string; barcode: string }[];
     mrp?: number;
     option_set?: number;
     note?: string;
@@ -85,12 +86,12 @@ export type ProductCreatePayload = {
     model?: string;
     series?: string;
     alternative_names?: string[];
+    barcodes?: { category_id: number; barcode: string }[];
     option_set?: number;
     mrp?: number | string;
     note?: string;
     system_note?: string;
     image?: File | null;
-    dynamic_fields?: any;
     sector_id?: number;
     sub_sector_id?: number;
     category_id?: number;
@@ -105,6 +106,7 @@ export type ProductForm = {
     series?: string;
     alternative_name?: string;
     alternative_names?: string[];
+    barcodes?: { category_id: number; barcode: string }[];
     description: string;
     info: string;
     note?: string;
@@ -113,7 +115,6 @@ export type ProductForm = {
     status: string;
     image?: File | null;
     system_note?: string;
-    dynamic_fields?: any;
     sector_id?: number;
     sub_sector_id?: number;
     category_id?: number;
@@ -149,12 +150,14 @@ export const createProduct = async (data: ProductCreatePayload) => {
     if (data.alternative_names && data.alternative_names.length > 0) {
         formData.append("alternative_names", JSON.stringify(data.alternative_names));
     }
+    if (data.barcodes && data.barcodes.length > 0) {
+        formData.append("barcodes", JSON.stringify(data.barcodes));
+    }
     if (data.option_set !== undefined) formData.append("option_set", String(data.option_set));
     if (data.mrp) formData.append("mrp", String(data.mrp));
     if (data.note) formData.append("note", data.note);
     if (data.system_note) formData.append("system_note", data.system_note);
     if (data.image) formData.append("image", data.image);
-    if (data.dynamic_fields) formData.append("dynamic_fields", JSON.stringify(data.dynamic_fields));
     if (data.sector_id) formData.append("sector_id", String(data.sector_id));
     if (data.sub_sector_id) formData.append("sub_sector_id", String(data.sub_sector_id));
     if (data.category_id) formData.append("category_id", String(data.category_id));
@@ -187,11 +190,13 @@ export const updateProduct = async (
     if (data.alternative_names !== undefined) {
         formData.append("alternative_names", JSON.stringify(data.alternative_names || []));
     }
+    if (data.barcodes !== undefined) {
+        formData.append("barcodes", JSON.stringify(data.barcodes || []));
+    }
     if (data.option_set !== undefined) formData.append("option_set", String(data.option_set));
     if (data.mrp) formData.append("mrp", String(data.mrp));
     if (data.note !== undefined) formData.append("note", data.note || "");
     if (data.system_note !== undefined) formData.append("system_note", data.system_note || "");
-    if (data.dynamic_fields !== undefined) formData.append("dynamic_fields", JSON.stringify(data.dynamic_fields || {}));
     if (data.sector_id) formData.append("sector_id", String(data.sector_id));
     if (data.sub_sector_id) formData.append("sub_sector_id", String(data.sub_sector_id));
     if (data.category_id) formData.append("category_id", String(data.category_id));
@@ -249,6 +254,8 @@ export const getProducts = async (filters?: {
     brand_id?: string | number;
     brand?: string;
     category?: string;
+    primary_category?: string;
+    secondary_category?: string;
     status?: string;
     search?: string;
     page?: number;
@@ -273,6 +280,8 @@ export const getProducts = async (filters?: {
 
         if (filters.brand) params.append("brand", filters.brand);
         if (filters.category) params.append("category", filters.category);
+        if (filters.primary_category) params.append("primary_category", filters.primary_category);
+        if (filters.secondary_category) params.append("secondary_category", filters.secondary_category);
         if (filters.status) params.append("status", filters.status);
 
         if (filters.page) params.append("page", String(filters.page));
@@ -401,5 +410,17 @@ export const downloadProductQrPdf = async (id: number | string) => {
 
 export const getProductsMappings = async () => {
     const json = await http("/products/mappings");
+    return json.data ?? json;
+};
+
+/* ============================================================================
+   GENERATE BARCODE FOR MAPPED CATEGORY
+   POST /products/:id/generate-barcode
+============================================================================ */
+export const generateProductBarcode = async (id: number | string, categoryId?: number) => {
+    const json = await http(`/products/${id}/generate-barcode`, {
+        method: "POST",
+        body: JSON.stringify({ categoryId }),
+    });
     return json.data ?? json;
 };

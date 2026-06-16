@@ -24,20 +24,42 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
   const [dark, setDark] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+  const [user, setUser] = useState<{ id?: string | number; name?: string; email?: string; user_id?: string } | null>(null);
   const navigate = useNavigate();
   const { triggerRefresh } = useRefresh();
   const profileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let parsedUser: any = null;
     const storedUser = localStorage.getItem("user");
-    if (storedUser && storedUser !== "undefined") {
+    
+    if (storedUser && storedUser !== "undefined" && storedUser !== "{}") {
       try {
-        setUser(JSON.parse(storedUser));
+        parsedUser = JSON.parse(storedUser);
       } catch (error) {
         console.error("Failed to parse user data:", error);
       }
     }
+
+    // Fallback: If no valid user object, try to decode from token
+    if (!parsedUser || !parsedUser.email) {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const payload = JSON.parse(atob(token.split('.')[1]));
+          parsedUser = {
+            ...parsedUser,
+            email: payload.email,
+            user_id: payload.user_id || payload.user_main_id,
+            id: payload.id
+          };
+        } catch (e) {
+          console.error("Failed to decode token for user data", e);
+        }
+      }
+    }
+
+    setUser(parsedUser || { id: 'Admin' });
   }, []);
 
   const handleLogout = () => {
@@ -63,7 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isSearchOpen]);
+  }, [isSearchOpen, profileOpen]);
 
   return (
     <header className="navbar-wrapper">
@@ -118,23 +140,22 @@ const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarOpen }) => {
               onClick={() => setProfileOpen(!profileOpen)}
             >
               <div className="profile-initials">
-                {user?.name
-                  ? user.name.charAt(0)
-                  : user?.email
-                    ? user.email.charAt(0)
-                    : "U"}
+                {user?.email ? user.email.charAt(0).toUpperCase() : <User size={16} color="white" />}
               </div>
               <ChevronDown size={16} />
             </button>
 
             {profileOpen && (
               <div className="dropdown">
-                {user && (
                   <div className="dropdown-user">
-                    <p className="user-name">{user.name}</p>
-                    <p className="user-email">{user.email}</p>
+                    <div className="dropdown-user-avatar">
+                      {user?.email ? user.email.charAt(0).toUpperCase() : <User size={20} />}
+                    </div>
+                    <div className="dropdown-user-info">
+                      <p className="user-name">ID: {user?.user_id || user?.id || 'Admin'}</p>
+                      {user?.email && <p className="user-email">{user.email}</p>}
+                    </div>
                   </div>
-                )}
                 <button><User size={16} /> Profile</button>
                 <button><Settings size={16} /> Settings</button>
                 <button onClick={() => setDark(!dark)}>

@@ -1,13 +1,15 @@
-import { http, getUserId } from "../../../../base_api/base_api";
+import { http } from "../../../../base_api/base_api";
 
 /* LIST MENUS */
 export const getMenus = async () => {
-  const json = await http("/multitab/multitab-menu/all");
+  const json = await http("/menu/fields");
   return Array.isArray(json) ? json : json.data || json.rows || [];
 };
 
-export const getMenuById = (id: number) => {
-  return http(`/multitab/multitab-menu/${id}`);
+export const getMenuById = async (id: number) => {
+  const list = await getMenus();
+  const found = list.find((m: any) => m.id === id);
+  return { data: found || null };
 };
 
 /* ADD MENU */
@@ -18,12 +20,14 @@ export const addMenu = (data: {
 }) => {
   const payload = {
     menu_title_id: data.menu_title_id || 1,
-    tab_name: data.page_title,
+    page_title: data.page_title,
     status: data.status,
-    user_id: getUserId()
+    itab: null,
+    icon_name: null,
+    link: ""
   };
 
-  return http("/multitab/multitab-menu", {
+  return http("/menu/fields", {
     method: "POST",
     body: JSON.stringify(payload),
   });
@@ -37,12 +41,14 @@ export const updateMenu = (id: number, data: {
 }) => {
   const payload = {
     menu_title_id: data.menu_title_id || 1,
-    tab_name: data.page_title,
+    page_title: data.page_title,
     status: data.status,
-    user_id: getUserId()
+    itab: null,
+    icon_name: null,
+    link: ""
   };
 
-  return http(`/multitab/multitab-menu/${id}`, {
+  return http(`/menu/fields/${id}`, {
     method: "PUT",
     body: JSON.stringify(payload),
   });
@@ -50,7 +56,7 @@ export const updateMenu = (id: number, data: {
 
 /* DELETE MENU */
 export const deleteMenu = (id: number) => {
-  return http(`/multitab/multitab-menu/${id}`, {
+  return http(`/menu/fields/${id}`, {
     method: "DELETE",
   });
 };

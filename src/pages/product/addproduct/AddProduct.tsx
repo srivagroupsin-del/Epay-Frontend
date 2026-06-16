@@ -6,8 +6,6 @@ import { useMapping } from "../../../context/MappingContext";
 import { useLoading } from "../../../context/LoadingContext";
 import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import QRScannerModal from "../../../components/qrscanner/QRScannerModal";
-import DynamicProductFields from "../../../components/product/DynamicProductFields";
-import { MultitabConfigApi } from "../../../api/multitabConfig.api";
 import "./AddProduct.css";
 
 interface SelectedMapping {
@@ -32,8 +30,6 @@ const AddProduct = () => {
 
     // Mapping Selection Logic
     const [selectedMappings, setSelectedMappings] = useState<SelectedMapping[]>([]);
-    const [dynamicFieldValues, setDynamicFieldValues] = useState<any[]>([]);
-    const [fieldsByCategory, setFieldsByCategory] = useState<any>({});
     const [isScanning, setIsScanning] = useState(false);
 
     // UI state for the current selection being made
@@ -62,6 +58,15 @@ const AddProduct = () => {
         optionSet: false,
         image: null as File | null,
     });
+
+    const [barcodes, setBarcodes] = useState<Record<number, string>>({});
+
+    const handleBarcodeChange = (categoryId: number, value: string) => {
+        setBarcodes(prev => ({
+            ...prev,
+            [categoryId]: value
+        }));
+    };
 
     const [showScanner, setShowScanner] = useState(false);
 
@@ -104,25 +109,6 @@ const AddProduct = () => {
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    // 🔥 Batch Fetch Dynamic Fields
-    useEffect(() => {
-        const categoryIds = Array.from(new Set(selectedMappings.map(m => m.secondary_id || m.primary_id)));
-        if (categoryIds.length === 0) {
-            setFieldsByCategory({});
-            return;
-        }
-
-        const fetchFields = async () => {
-            try {
-                const data = await MultitabConfigApi.getDynamicFields(categoryIds as any);
-                setFieldsByCategory(data || {});
-            } catch (err) {
-                console.error("Failed to fetch dynamic fields", err);
-            }
-        };
-        fetchFields();
-    }, [selectedMappings]);
-    
     // 🟢 Barcode Scanner Support (Global Listener)
     useEffect(() => {
         let scannerBuffer = "";
@@ -143,28 +129,7 @@ const AddProduct = () => {
                     scannerBuffer = "";
 
                     const activeEl = document.activeElement as HTMLElement;
-                    const mappingId = activeEl?.getAttribute("data-mapping-id");
-                    const fieldId = activeEl?.getAttribute("data-field-id");
-
-                    if (mappingId && fieldId) {
-                        setDynamicFieldValues(prev => {
-                            const updated = [...prev];
-                            const mId = Number(mappingId);
-                            const fId = Number(fieldId);
-                            
-                            const idx = updated.findIndex(v => v.mapping_id === mId && v.field_id === fId);
-                            if (idx > -1) {
-                                updated[idx] = { ...updated[idx], value: scannedValue };
-                            } else {
-                                updated.push({
-                                    mapping_id: mId,
-                                    field_id: fId,
-                                    value: scannedValue
-                                });
-                            }
-                            return updated;
-                        });
-                    } else if (activeEl?.getAttribute("name") === "model") {
+                    if (activeEl?.getAttribute("name") === "model") {
                         setForm(prev => ({ ...prev, model: scannedValue }));
                     }
                     
@@ -177,7 +142,7 @@ const AddProduct = () => {
 
         window.addEventListener("keydown", handler, true);
         return () => window.removeEventListener("keydown", handler, true);
-    }, [selectedMappings, fieldsByCategory]);
+    }, []);
 
     /* ---------------- CASCADING DROPDOWN LOGIC ---------------- */
 
@@ -411,6 +376,14 @@ const AddProduct = () => {
             setSaving(true);
             showLoader("Creating product, please wait...");
 
+            const activeCategoryIds = new Set(selectedMappings.map(m => m.secondary_id || m.primary_id));
+            const filteredBarcodes = Object.entries(barcodes)
+                .filter(([catId, value]) => activeCategoryIds.has(Number(catId)) && value.trim())
+                .map(([catId, val]) => ({
+                    category_id: Number(catId),
+                    barcode: val.trim()
+                }));
+
             const payload: ProductCreatePayload = {
                 product_name: form.productName,
                 description: form.description || "",
@@ -424,15 +397,11 @@ const AddProduct = () => {
                 model: form.model || undefined,
                 series: form.series || undefined,
                 alternative_names: form.alternativeNames.filter(n => n.trim()),
+                barcodes: filteredBarcodes,
                 option_set: form.optionSet ? 1 : 0,
                 mrp: form.mrp ? Number(form.mrp) : undefined,
                 note: form.note || undefined,
                 image: form.image,
-                dynamic_fields: (dynamicFieldValues || []).map((f: any) => ({
-                    mapping_id: f.mapping_id,
-                    field_id: f.field_id,
-                    value: f.value ?? ""
-                })),
             };
 
             await createProduct(payload);
@@ -466,7 +435,9 @@ const AddProduct = () => {
 
                 {/* MAPPING SELECTION SECTION */}
                 <div className="mapping-selection-section" style={{ padding: '20px', backgroundColor: '#f8fafc', borderRadius: '12px', marginBottom: '25px', border: '1px solid #e2e8f0' }}>
-                    {/* <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '15px', color: '#1e293b' }}>Category & Brand Mappings</h3> */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', flexWrap: 'wrap', gap: '10px' }}>
+                        <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1e293b', margin: 0 }}>Category & Brand Mappings</h3>
+                    </div>
 
                     <div className="product-form-grid" style={{ marginBottom: '15px' }}>
                         {/* PRIMARY CATEGORY */}
@@ -615,15 +586,27 @@ const AddProduct = () => {
                                     </button>
                                 </div>
 
-                                <DynamicProductFields 
-                                    mapping_id={m.mapping_id}
-                                    fields={[
-                                        ...(fieldsByCategory.global || []),
-                                        ...(fieldsByCategory[m.secondary_id || m.primary_id] || [])
-                                    ]}
-                                    dynamicFields={dynamicFieldValues}
-                                    setDynamicFields={setDynamicFieldValues}
-                                />
+                                {/* BARCODE FIELD */}
+                                <div style={{ marginBottom: '16px' }}>
+                                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
+                                        Barcode (for {m.secondary_name || m.primary_name})
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Enter Barcode..."
+                                        className="barcode-input"
+                                        value={barcodes[m.secondary_id || m.primary_id] || ""}
+                                        onChange={(e) => handleBarcodeChange(m.secondary_id || m.primary_id, e.target.value)}
+                                        style={{
+                                            width: '100%',
+                                            padding: '8px 12px',
+                                            border: '1px solid #cbd5e1',
+                                            borderRadius: '6px',
+                                            fontSize: '14px',
+                                            boxSizing: 'border-box'
+                                        }}
+                                    />
+                                </div>
                             </div>
                         ))}
                         {selectedMappings.length === 0 && (

@@ -34,9 +34,7 @@ type SidebarProps = {
 type SidebarMode = "menu" | "settings";
 
 const settingsRoutes = [
-  "/settings", "/website", "/variant", "/multitab", "/sub-multitab",
-  "/sector-multitab", "/category-multitab", "/brand-multitab", "/create-tab-multitab",
-  "/settings/multitab-"
+  "/settings", "/website", "/variant"
 ];
 
 const Sidebar = ({ open, onToggle }: SidebarProps) => {
@@ -62,7 +60,7 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
   // Fetch sidebar data (dynamic modules)
   useEffect(() => {
     if (mode === "settings") return; // Skip fetching in settings mode
-    
+
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -120,18 +118,13 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
     const isSettings = settingsRoutes.some(route => currentPath.startsWith(route));
     if (isSettings) {
       if (currentPath.includes("/settings/menu")) setActiveMenu("Menu Section");
+      else if (currentPath.includes("/settings/multitab")) setActiveMenu("Multitab System");
       else if (currentPath.includes("/settings/roles") || currentPath.includes("/settings/permissions")) setActiveMenu("Security");
       else if (currentPath.includes("/settings/page-creation") || currentPath.includes("/settings/dynamic-form-creator")) setActiveMenu("Dynamic Section");
       else if (currentPath.includes("/website")) setActiveMenu("Website");
       else if (currentPath.includes("/variant")) setActiveMenu("Variant Field");
-      else if (currentPath.includes("/multitab")) setActiveMenu("Sector Title Multitab");
-      else if (currentPath.includes("/sub-multitab")) setActiveMenu("SubSector Multi Tab");
-      else if (currentPath.includes("/sector-multitab")) setActiveMenu("Sector Multi Tab");
-      else if (currentPath.includes("/category-multitab")) setActiveMenu("Category Multitab");
-      else if (currentPath.includes("/brand-multitab")) setActiveMenu("Brand Multitab");
-      else if (currentPath.includes("/create-tab-multitab")) setActiveMenu("Create Tab");
-      else if (currentPath.includes("/settings/multitab-")) setActiveMenu("Multitab Configuration");
       return;
+
     }
 
     // 2. Check Dynamic Modules (Inventory)
@@ -200,7 +193,6 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
     "Products": [
       { to: "/product/add", label: "Add Product" },
       { to: "/products", label: "View Product" },
-      { to: "/product/update-mrp", label: "Update MRP" },
       { to: "/product-mapping", label: "Product Mapping" },
       // { to: "/product/tax", label: "Tax" }
     ]
@@ -248,6 +240,15 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
               {/* <SidebarLink to="/settings/menu-pages" label="Menu Page" /> */}
             </SidebarItem>
 
+            <SidebarItem label="Multitab System" icon={Layers} open={activeMenu === "Multitab System"} onToggle={(e) => handleToggleMenu("Multitab System", e)}>
+              <SidebarLink to="/settings/multitab/menu" label="Multitab Menu" />
+              <SidebarLink to="/settings/multitab/tab-heading" label="Tab Heading" />
+              <SidebarLink to="/settings/multitab/checkbox" label="Checkbox" />
+              <SidebarLink to="/settings/multitab/mapping" label="Mapping" />
+              <SidebarLink to="/settings/multitab/preview" label="Preview" />
+            </SidebarItem>
+
+
             {/* <SidebarItem label="Security" icon={Shield} open={activeMenu === "Security"} onToggle={(e) => handleToggleMenu("Security", e)}>
               <SidebarLink to="/settings/roles" label="User Roles" />
               <SidebarLink to="/settings/permissions" label="Permissions" />
@@ -270,62 +271,6 @@ const Sidebar = ({ open, onToggle }: SidebarProps) => {
               <SidebarLink to="/variant/add-tax" label="Tax Management" />
               <SidebarLink to="/variant/discount-management" label="Discount Management" />
               <SidebarLink to="/variant/offer-management" label="Offer Management" />
-            </SidebarItem>
-
-            {/* <SidebarItem label="Sector Title Multitab" icon={Layers} open={activeMenu === "Sector Title Multitab"} onToggle={(e) => handleToggleMenu("Sector Title Multitab", e)}>
-              <SidebarLink to="/multitab/add-menu" label="Add Menu" />
-              <SidebarLink to="/multitab/add-tabheading" label="Tabheading" />
-              <SidebarLink to="/multitab/add-checkbox" label="Checkbox" />
-              <SidebarLink to="/multitab/add-mapping" label="Mapping" />
-              <SidebarLink to="/multitab/add-preview" label="Preview" />
-            </SidebarItem>
-
-            <SidebarItem label="SubSector Multi Tab" icon={Layers} open={activeMenu === "SubSector Multi Tab"} onToggle={(e) => handleToggleMenu("SubSector Multi Tab", e)}>
-              <SidebarLink to="/sub-multitab/add-menu" label="Add Menu" />
-              <SidebarLink to="/sub-multitab/add-tabheading" label="Tabheading" />
-              <SidebarLink to="/sub-multitab/add-checkbox" label="Checkbox" />
-              <SidebarLink to="/sub-multitab/add-mapping" label="Mapping" />
-              <SidebarLink to="/sub-multitab/add-preview" label="Preview" />
-            </SidebarItem>
-
-            <SidebarItem label="Sector Multi Tab" icon={Layers} open={activeMenu === "Sector Multi Tab"} onToggle={(e) => handleToggleMenu("Sector Multi Tab", e)}>
-              <SidebarLink to="/sector-multitab/add-menu" label="Add Menu" />
-              <SidebarLink to="/sector-multitab/add-tabheading" label="Tabheading" />
-              <SidebarLink to="/sector-multitab/add-checkbox" label="Checkbox" />
-              <SidebarLink to="/sector-multitab/add-mapping" label="Mapping" />
-              <SidebarLink to="/sector-multitab/add-preview" label="Preview" />
-            </SidebarItem>
-
-            <SidebarItem label="Category Multitab" icon={Grid} open={activeMenu === "Category Multitab"} onToggle={(e) => handleToggleMenu("Category Multitab", e)}>
-              <SidebarLink to="/category-multitab/add-menu" label="Add Menu" />
-              <SidebarLink to="/category-multitab/add-tabheading" label="Tabheading" />
-              <SidebarLink to="/category-multitab/add-checkbox" label="Checkbox" />
-              <SidebarLink to="/category-multitab/add-mapping" label="Mapping" />
-              <SidebarLink to="/category-multitab/add-preview" label="Preview" />
-            </SidebarItem>
-
-            <SidebarItem label="Brand Multitab" icon={Tag} open={activeMenu === "Brand Multitab"} onToggle={(e) => handleToggleMenu("Brand Multitab", e)}>
-              <SidebarLink to="/brand-multitab/add-menu" label="Add Menu" />
-              <SidebarLink to="/brand-multitab/add-tabheading" label="Tabheading" />
-              <SidebarLink to="/brand-multitab/add-checkbox" label="Checkbox" />
-              <SidebarLink to="/brand-multitab/add-mapping" label="Mapping" />
-              <SidebarLink to="/brand-multitab/add-preview" label="Preview" />
-            </SidebarItem> */}
-
-            <SidebarItem label="Create Tab" icon={Layers} open={activeMenu === "Create Tab"} onToggle={(e) => handleToggleMenu("Create Tab", e)}>
-              {/* <SidebarLink to="/create-tab-multitab/add-menu" label="Add Menu" /> */}
-              <SidebarLink to="/create-tab-multitab/add-tabheading" label="Tabheading" />
-              <SidebarLink to="/create-tab-multitab/add-checkbox" label="Checkbox" />
-              <SidebarLink to="/create-tab-multitab/add-mapping" label="Mapping" />
-              <SidebarLink to="/create-tab-multitab/add-preview" label="Preview" />
-            </SidebarItem>
-
-            <SidebarItem label="Multitab Configuration" icon={Grid} open={activeMenu === "Multitab Configuration"} onToggle={(e) => handleToggleMenu("Multitab Configuration", e)}>
-              <SidebarLink to="/settings/multitab-menu" label="Multitab Menu" />
-              <SidebarLink to="/settings/multitab-heading" label="Multitab Heading" />
-              <SidebarLink to="/settings/multitab-checkbox" label="Multitab Checkbox" />
-              <SidebarLink to="/settings/multitab-fields" label="Multitab Fields" />
-              <SidebarLink to="/settings/multitab-config" label="Multitab Config" />
             </SidebarItem>
           </SidebarSection>
         ) : (
