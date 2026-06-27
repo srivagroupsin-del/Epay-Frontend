@@ -1,24 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { Pencil, Trash2 } from "lucide-react";
-import { getMenuTitles } from "../menu_section/menutitle/menuTitle.api";
 import {
   getMultitabMenus,
   addMultitabMenu,
   updateMultitabMenu,
   deleteMultitabMenu,
 } from "../../../api/multitab.api";
-import type { MenuTitle } from "../menu_section/menutitle/menuTitle.types";
 import { useLoading } from "../../../context/LoadingContext";
 import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import { useDeleteConfirm } from "../../../context/DeleteConfirmContext";
 
 interface MultitabMenu {
   id: number;
-  menu_title_id: number;
   menu_name: string;
   description: string;
   status: "active" | "inactive";
-  menu_title_name?: string;
 }
 
 const MultitabMenus: React.FC = () => {
@@ -26,12 +22,10 @@ const MultitabMenus: React.FC = () => {
   const { showSuccess, showDeleteSuccess } = useSuccessPopup();
   const { confirmDelete } = useDeleteConfirm();
 
-  const [menuTitles, setMenuTitles] = useState<MenuTitle[]>([]);
   const [menus, setMenus] = useState<MultitabMenu[]>([]);
   const [editingId, setEditingId] = useState<number | null>(null);
 
   const [form, setForm] = useState({
-    menu_title_id: "",
     menu_name: "",
     description: "",
     status: "active" as "active" | "inactive",
@@ -40,11 +34,7 @@ const MultitabMenus: React.FC = () => {
   const loadData = async () => {
     try {
       showLoader("Loading data...");
-      const [titlesRes, menusRes] = await Promise.all([
-        getMenuTitles(),
-        getMultitabMenus(),
-      ]);
-      setMenuTitles(Array.isArray(titlesRes) ? titlesRes : titlesRes?.data || []);
+      const menusRes = await getMultitabMenus();
       setMenus(menusRes);
     } catch (error) {
       console.error("Failed to load data:", error);
@@ -64,15 +54,15 @@ const MultitabMenus: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!form.menu_title_id || !form.menu_name.trim()) {
+    if (!form.menu_name.trim()) {
       alert("Please fill all required fields");
       return;
     }
 
     try {
       showLoader(editingId ? "Updating Menu..." : "Saving Menu...");
+
       const payload = {
-        menu_title_id: Number(form.menu_title_id),
         menu_name: form.menu_name.trim(),
         description: form.description.trim(),
         status: form.status,
@@ -87,7 +77,6 @@ const MultitabMenus: React.FC = () => {
       }
 
       setForm({
-        menu_title_id: "",
         menu_name: "",
         description: "",
         status: "active",
@@ -104,7 +93,6 @@ const MultitabMenus: React.FC = () => {
   const handleEdit = (menu: MultitabMenu) => {
     setEditingId(menu.id);
     setForm({
-      menu_title_id: String(menu.menu_title_id),
       menu_name: menu.menu_name,
       description: menu.description || "",
       status: menu.status,
@@ -128,7 +116,6 @@ const MultitabMenus: React.FC = () => {
 
   const handleCancel = () => {
     setForm({
-      menu_title_id: "",
       menu_name: "",
       description: "",
       status: "active",
@@ -180,30 +167,6 @@ const MultitabMenus: React.FC = () => {
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px" }}>
             <div style={{ position: "relative" }}>
-              <label style={floatingLabelStyle}>MENU TITLE *</label>
-              <select
-                name="menu_title_id"
-                value={form.menu_title_id}
-                onChange={handleChange}
-                style={{
-                  ...inputStyle,
-                  appearance: "none",
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "right 16px center",
-                  backgroundSize: "18px",
-                }}
-              >
-                <option value="">Select Menu Title</option>
-                {menuTitles.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.menu_title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div style={{ position: "relative" }}>
               <label style={floatingLabelStyle}>MENU NAME *</label>
               <input
                 type="text"
@@ -212,18 +175,6 @@ const MultitabMenus: React.FC = () => {
                 onChange={handleChange}
                 placeholder="Enter Menu Name"
                 style={inputStyle}
-              />
-            </div>
-
-            <div style={{ position: "relative", gridColumn: "span 2" }}>
-              <label style={floatingLabelStyle}>DESCRIPTION</label>
-              <textarea
-                name="description"
-                value={form.description}
-                onChange={handleChange}
-                placeholder="Enter description (optional)"
-                rows={3}
-                style={{ ...inputStyle, resize: "none" }}
               />
             </div>
 
@@ -245,6 +196,18 @@ const MultitabMenus: React.FC = () => {
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
               </select>
+            </div>
+
+            <div style={{ position: "relative", gridColumn: "span 2" }}>
+              <label style={floatingLabelStyle}>DESCRIPTION</label>
+              <textarea
+                name="description"
+                value={form.description}
+                onChange={handleChange}
+                placeholder="Enter description (optional)"
+                rows={3}
+                style={{ ...inputStyle, resize: "none" }}
+              />
             </div>
           </div>
 
@@ -303,7 +266,6 @@ const MultitabMenus: React.FC = () => {
                 <tr style={{ borderBottom: "2px solid #f1f5f9" }}>
                   <th style={{ padding: "12px 16px", fontWeight: "700", color: "#475569" }}>S.NO</th>
                   <th style={{ padding: "12px 16px", fontWeight: "700", color: "#475569" }}>MENU NAME</th>
-                  <th style={{ padding: "12px 16px", fontWeight: "700", color: "#475569" }}>MENU TITLE</th>
                   <th style={{ padding: "12px 16px", fontWeight: "700", color: "#475569" }}>STATUS</th>
                   <th style={{ padding: "12px 16px", fontWeight: "700", color: "#475569", textAlign: "center" }}>ACTION</th>
                 </tr>
@@ -311,7 +273,7 @@ const MultitabMenus: React.FC = () => {
               <tbody>
                 {menus.length === 0 ? (
                   <tr>
-                    <td colSpan={5} style={{ padding: "30px", textAlign: "center", color: "#94a3b8" }}>
+                    <td colSpan={4} style={{ padding: "30px", textAlign: "center", color: "#94a3b8" }}>
                       No Menus Configured
                     </td>
                   </tr>
@@ -320,7 +282,6 @@ const MultitabMenus: React.FC = () => {
                     <tr key={menu.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
                       <td style={{ padding: "16px" }}>{index + 1}</td>
                       <td style={{ padding: "16px", fontWeight: "600", color: "#1e293b" }}>{menu.menu_name}</td>
-                      <td style={{ padding: "16px", color: "#64748b" }}>{menu.menu_title_name || "—"}</td>
                       <td style={{ padding: "16px" }}>
                         <span style={{
                           padding: "4px 12px",

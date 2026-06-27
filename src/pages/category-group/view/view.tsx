@@ -340,7 +340,7 @@ const CategoryGroupView = () => {
                 </div>
             )}
 
-            {/* 📋 Results Display */}
+            {/*   Results Display */}
             {loading ? null : filteredData.length > 0 ? (
                 <>
                     {viewMode === "table" ? (

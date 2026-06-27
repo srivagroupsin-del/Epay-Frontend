@@ -111,7 +111,7 @@ const QRScannerExample: React.FC = () => {
 
             {/* Usage Instructions */}
             <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '8px' }}>
-                <h3>📋 Usage Instructions</h3>
+                <h3>  Usage Instructions</h3>
                 <ol style={{ lineHeight: '1.8' }}>
                     <li>Import the QRScannerModal component</li>
                     <li>Add state for modal visibility: <code>const [isQRModalOpen, setIsQRModalOpen] = useState(false);</code></li>

@@ -12,12 +12,13 @@ const DynamicComponentRenderer: React.FC<{ fileUrl: string }> = ({ fileUrl }) =>
 
     const loadBabelAndRun = async () => {
       try {
+        // Load Babel from local public folder — no CDN dependency
         if (!(window as any).Babel) {
           await new Promise<void>((resolve, reject) => {
             const script = document.createElement("script");
-            script.src = "https://unpkg.com/@babel/standalone/babel.min.js";
+            script.src = "/babel.min.js";
             script.onload = () => resolve();
-            script.onerror = () => reject(new Error("Failed to load Babel compiler"));
+            script.onerror = () => reject(new Error("Failed to load local Babel compiler"));
             document.head.appendChild(script);
           });
         }
@@ -28,11 +29,12 @@ const DynamicComponentRenderer: React.FC<{ fileUrl: string }> = ({ fileUrl }) =>
         }
         const rawCode = await response.text();
 
-        // Transpile TSX to JS
+        // Transpile TSX to JS — use "classic" runtime so JSX compiles to React.createElement
+        // (avoids requiring "react/jsx-runtime" which is not in the sandbox)
         const compiled = (window as any).Babel.transform(rawCode, {
           presets: [
             ["env", { modules: "commonjs" }],
-            "react",
+            ["react", { runtime: "classic" }],
             "typescript"
           ],
           filename: "dynamic_component.tsx",
@@ -40,10 +42,55 @@ const DynamicComponentRenderer: React.FC<{ fileUrl: string }> = ({ fileUrl }) =>
 
         // Execute code and extract component
         const exports: any = {};
-        const requireMap: Record<string, any> = {
-          react: { ...React, default: React, useState: React.useState, useEffect: React.useEffect },
+
+        // Build a pre-configured apiFetch helper available to all dynamic modules
+        const _getToken = () => localStorage.getItem("token") || "";
+        const _apiBase = (() => {
+          // Derive from current page origin, fallback to backend port 5000
+          const origin = window.location.origin;
+          return origin.includes("5173") || origin.includes("3000")
+            ? origin.replace(/:\d+$/, ":5000") + "/api"
+            : origin + "/api";
+        })();
+        const apiFetch = async (path: string, options: RequestInit = {}) => {
+          const res = await fetch(`${_apiBase}${path}`, {
+            ...options,
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${_getToken()}`,
+              ...((options.headers as Record<string, string>) || {}),
+            },
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          const json = await res.json();
+          return json.data ?? json;
         };
-        
+
+        const requireMap: Record<string, any> = {
+          react: {
+            ...React,
+            default: React,
+            useState: React.useState,
+            useEffect: React.useEffect,
+            useCallback: React.useCallback,
+            useMemo: React.useMemo,
+            useRef: React.useRef,
+            useReducer: React.useReducer,
+          },
+          // Fallback for automatic JSX runtime (in case a module uses it)
+          "react/jsx-runtime": {
+            jsx: React.createElement,
+            jsxs: React.createElement,
+            Fragment: React.Fragment,
+          },
+          "react/jsx-dev-runtime": {
+            jsxDEV: React.createElement,
+            Fragment: React.Fragment,
+          },
+          // Modules can do: const { apiFetch } = require("api");
+          api: { apiFetch },
+        };
+
         const customRequire = (name: string) => {
           if (requireMap[name]) return requireMap[name];
           throw new Error(`Module '${name}' is not pre-configured.`);
@@ -106,8 +153,8 @@ export const MultitabContentLoader: React.FC<MultitabContentLoaderProps> = ({ me
       try {
         const res = await getMultitabPreview();
         // Match by Menu Title name (ignoring casing and spaces)
-        const matched = res.filter((m: any) => 
-          m.menu_title_name?.toLowerCase().replace(/\s+/g, "") === 
+        const matched = res.filter((m: any) =>
+          m.menu_title_name?.toLowerCase().replace(/\s+/g, "") ===
           menuTitle.toLowerCase().replace(/\s+/g, "")
         );
         setMenus(matched);
@@ -160,7 +207,7 @@ export const MultitabContentLoader: React.FC<MultitabContentLoaderProps> = ({ me
             transition: "all 0.2s",
           }}
         >
-          📋 Standard List
+          Standard List
         </button>
 
         {/* Dynamic Tab Headings from multitab config */}
@@ -295,7 +342,7 @@ export const MultitabContentLoader: React.FC<MultitabContentLoaderProps> = ({ me
 
       {/* Info Modal */}
       {popupData && (
-        <div 
+        <div
           style={{
             position: "fixed",
             top: 0,
@@ -308,10 +355,10 @@ export const MultitabContentLoader: React.FC<MultitabContentLoaderProps> = ({ me
             alignItems: "center",
             justifyContent: "center",
             zIndex: 9999,
-          }} 
+          }}
           onClick={() => setPopupData(null)}
         >
-          <div 
+          <div
             style={{
               background: "#fff",
               borderRadius: "16px",
@@ -320,15 +367,15 @@ export const MultitabContentLoader: React.FC<MultitabContentLoaderProps> = ({ me
               width: "90%",
               boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
               border: "1px solid #e2e8f0",
-            }} 
+            }}
             onClick={(e) => e.stopPropagation()}
           >
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
               <h3 style={{ fontSize: "18px", fontWeight: "800", color: "#1e293b", margin: 0 }}>
                 {popupData.title}
               </h3>
-              <button 
-                onClick={() => setPopupData(null)} 
+              <button
+                onClick={() => setPopupData(null)}
                 style={{
                   background: "#f1f5f9",
                   border: "none",

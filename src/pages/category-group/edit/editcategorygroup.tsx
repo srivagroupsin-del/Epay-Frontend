@@ -278,7 +278,7 @@ const EditCategoryGroup: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* 📋 Selected Items Card */}
+                    {/*   Selected Items Card */}
                     <div className="selected-items-display">
                         <h3>Selected Items</h3>
                         {displayedCategories.length > 0 ? (

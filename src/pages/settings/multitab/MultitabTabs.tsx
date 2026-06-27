@@ -11,13 +11,11 @@ import { useLoading } from "../../../context/LoadingContext";
 import { useSuccessPopup } from "../../../context/SuccessPopupContext";
 import { useDeleteConfirm } from "../../../context/DeleteConfirmContext";
 
-import { getMenuTitles } from "../menu_section/menutitle/menuTitle.api";
-import type { MenuTitle } from "../menu_section/menutitle/menuTitle.types";
+
 
 interface MultitabMenu {
   id: number;
   menu_name: string;
-  menu_title_id: number;
 }
 
 interface MultitabTab {
@@ -50,20 +48,16 @@ const MultitabTabs: React.FC = () => {
     description: "",
     status: "active" as "active" | "inactive",
   });
-  const [menuTitles, setMenuTitles] = useState<MenuTitle[]>([]);
-  const [selectedMenuTitleId, setSelectedMenuTitleId] = useState<string>("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const loadData = async () => {
     try {
       showLoader("Loading data...");
-      const [titlesRes, menusRes, tabsRes] = await Promise.all([
-        getMenuTitles(),
+      const [menusRes, tabsRes] = await Promise.all([
         getMultitabMenus(),
         getMultitabTabs(),
       ]);
-      setMenuTitles(Array.isArray(titlesRes) ? titlesRes : titlesRes?.data || []);
       setMenus(menusRes.filter((m: any) => m.status === "active"));
       setTabs(tabsRes);
     } catch (error) {
@@ -127,7 +121,6 @@ const MultitabTabs: React.FC = () => {
         description: "",
         status: "active",
       });
-      setSelectedMenuTitleId("");
       setSelectedFile(null);
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
@@ -149,12 +142,6 @@ const MultitabTabs: React.FC = () => {
       description: tab.description || "",
       status: tab.status,
     });
-    const associatedMenu = menus.find(m => m.id === tab.menu_id);
-    if (associatedMenu) {
-      setSelectedMenuTitleId(String(associatedMenu.menu_title_id));
-    } else {
-      setSelectedMenuTitleId("");
-    }
     setSelectedFile(null);
     setImagePreview(tab.image_url || null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -183,7 +170,6 @@ const MultitabTabs: React.FC = () => {
       description: "",
       status: "active",
     });
-    setSelectedMenuTitleId("");
     setSelectedFile(null);
     setImagePreview(null);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -233,36 +219,8 @@ const MultitabTabs: React.FC = () => {
           </div>
 
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "30px" }}>
-            {/* Menu Title Filter */}
-            <div style={{ position: "relative" }}>
-              <label style={floatingLabelStyle}>MENU TITLE</label>
-              <select
-                name="menu_title_filter"
-                value={selectedMenuTitleId}
-                onChange={(e) => {
-                  setSelectedMenuTitleId(e.target.value);
-                  setForm(prev => ({ ...prev, menu_id: "" }));
-                }}
-                style={{
-                  ...inputStyle,
-                  appearance: "none",
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
-                  backgroundRepeat: "no-repeat",
-                  backgroundPosition: "right 16px center",
-                  backgroundSize: "18px",
-                }}
-              >
-                <option value="">All Menu Titles</option>
-                {menuTitles.map((t) => (
-                  <option key={t.id} value={t.id}>
-                    {t.menu_title}
-                  </option>
-                ))}
-              </select>
-            </div>
-
             {/* Multitab Menu Select */}
-            <div style={{ position: "relative" }}>
+            <div style={{ position: "relative", gridColumn: "span 2" }}>
               <label style={floatingLabelStyle}>MULTITAB MENU *</label>
               <select
                 name="menu_id"
@@ -278,13 +236,11 @@ const MultitabTabs: React.FC = () => {
                 }}
               >
                 <option value="">Select Menu</option>
-                {menus
-                  .filter((m) => !selectedMenuTitleId || String(m.menu_title_id) === selectedMenuTitleId)
-                  .map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.menu_name}
-                    </option>
-                  ))}
+                {menus.map((m) => (
+                  <option key={m.id} value={m.id}>
+                    {m.menu_name}
+                  </option>
+                ))}
               </select>
             </div>
 

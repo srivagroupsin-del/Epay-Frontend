@@ -12,7 +12,6 @@ export const getMultitabMenuById = async (id: number) => {
 };
 
 export const addMultitabMenu = (data: {
-  menu_title_id: number;
   menu_name: string;
   description?: string;
   status: "active" | "inactive";
@@ -24,7 +23,6 @@ export const addMultitabMenu = (data: {
 };
 
 export const updateMultitabMenu = (id: number, data: {
-  menu_title_id?: number;
   menu_name?: string;
   description?: string;
   status?: "active" | "inactive";
@@ -129,4 +127,26 @@ export const saveMultitabMappings = (data: { tabId: number; checkboxIds: number[
 export const getMultitabPreview = async () => {
   const json = await http("/multitab/preview");
   return Array.isArray(json) ? json : json.data || [];
+};
+
+/* ================= ASSOCIATIONS ================= */
+export const getMenuAssociations = async (menuTitle: string, associatedId: number, parentAssociatedId?: number | null) => {
+  let url = `/multitab/associations?menuTitle=${encodeURIComponent(menuTitle)}&associatedId=${associatedId}`;
+  if (parentAssociatedId) {
+    url += `&parentAssociatedId=${parentAssociatedId}`;
+  }
+  const json = await http(url);
+  return json.data || [];
+};
+
+export const saveMenuAssociations = (data: {
+  menuTitle: string;
+  associatedId: number;
+  parentAssociatedId?: number | null;
+  menuIds: number[];
+}) => {
+  return http("/multitab/associations", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 };
